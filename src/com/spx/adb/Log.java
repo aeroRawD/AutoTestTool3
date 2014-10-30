@@ -9,6 +9,8 @@ public class Log {
 		System.out.println((sdf.format(new Date()))+"\t"+str);
 	}
 	
-	
+	public static void d(String tag, String str){
+		System.out.println((sdf.format(new Date()))+"\t"+tag+"\t"+str);
+	}
 
 }

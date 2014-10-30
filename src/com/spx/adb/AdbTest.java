@@ -1,5 +1,6 @@
 package com.spx.adb;
 
+import java.util.List;
 import java.util.Set;
 
 import com.android.ddmlib.AndroidDebugBridge;
@@ -11,7 +12,9 @@ public class AdbTest {
 		AndroidDebugBridge.init(false);
 		device = DeviceUtil.getDevice(serial);
 		System.out.println("device:" + device);
-		
+		if(device ==null){
+			throw new RuntimeException("failed to get device");
+		}
 //		String output = Util.runAdbCmdGetReturn(device, "dumpsys meminfo", 2000, true);
 //		System.out.println("output:" + output);
 		
@@ -60,18 +63,37 @@ public class AdbTest {
 		}
 	}
 
+	public void clickText(String text){
+		ScreenUi screenUi = ScreenUi.getScreenUiInstance(device);
+		screenUi.clickText(text);
+	}
 	
-
-	
+//	public void dumpUi(){
+//		ScreenUi.getUiDump(device, "data/uidump.xml");
+//	}
+//	
+//	public void parseUiDump(){
+//		List<UiNode> parseUiDump = ScreenUi.parseUiDump("data/uidump.xml");
+//		for(UiNode node:parseUiDump){
+//			Log.d("package:"+node.getValue("package")+", class:"+node.getValue("class")+", text:"+node.getValue("text")+",bounds:"+node.getValue("bounds"));
+//		}
+//	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Log.d("start");
 		AdbTest test = new AdbTest();
-		test.init("2008edd8f316");
+		test.init("");
+		Log.d("midle");
+//		test.dumpUi();
+//		Log.d("after dump");
+//		test.parseUiDump();
+//		test.clickText("主题风格");
 		test.testAppStartupTime();
 		AndroidDebugBridge.terminate();
+		Log.d("end");
 	}
 
 }

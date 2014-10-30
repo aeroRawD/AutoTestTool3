@@ -25,19 +25,26 @@ import com.android.ddmlib.TimeoutException;
  */
 public class AppStartupTimeTest {
 	private IDevice device = null;
-	private static final int MAX_TEST_COUNT = 12;
-	private int windowWidth = 600, windowHeight = 800; 
+	private static final int MAX_TEST_COUNT = 6;
+//	private int windowWidth = 600, windowHeight = 800; 
+	private int[] loc=new int[2];
 	public void perform(IDevice device) {
 		this.device = device;
 		
-		try {
-			RawImage screenshot = device.getScreenshot();
-			windowWidth = screenshot.width;
-			windowHeight = screenshot.height;
-		} catch (TimeoutException | AdbCommandRejectedException | IOException e) {
-			e.printStackTrace();
-		}
-		Log.d("windowWidth:" + windowWidth + ",windowHeight:" + windowHeight);
+		startPowerword();
+		loc = ScreenUi.getScreenUiInstance(device).getScreenLocation("退出");
+		if(loc==null)
+			return;
+		
+		System.out.println("location:  x:"+loc[0]+",y:"+loc[1]);
+//		try {
+//			RawImage screenshot = device.getScreenshot();
+//			windowWidth = screenshot.width;
+//			windowHeight = screenshot.height;
+//		} catch (TimeoutException | AdbCommandRejectedException | IOException e) {
+//			e.printStackTrace();
+//		}
+//		Log.d("windowWidth:" + windowWidth + ",windowHeight:" + windowHeight);
 		
 		runCmd("logcat -c");
 
@@ -84,7 +91,8 @@ public class AppStartupTimeTest {
 	}
 
 	private void quitPowerword() {
-		runCmd("input tap "+windowWidth/2+" "+(windowHeight/2+10));
+		
+		runCmd("input tap "+loc[0]+" "+loc[1]);
 	}
 
 	private void runCmd(String cmd) {

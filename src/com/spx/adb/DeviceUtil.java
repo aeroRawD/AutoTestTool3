@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
+import com.android.ddmlib.InstallException;
 
 public class DeviceUtil {
 	private static HashMap<String, IDevice> deviceMap = new HashMap<String, IDevice>();
@@ -41,13 +42,17 @@ public class DeviceUtil {
 	 * 
 	 * @return
 	 */
-	private static IDevice createDevice(String serial) {
+	public static IDevice createDevice(String serial) {
 		IDevice devices[] = getDevices();
 		if (devices == null)
 			return null;
 
 		for (IDevice dev : devices) {
 			if (dev != null && serial.equalsIgnoreCase(dev.getSerialNumber())) {
+				return dev;
+			}
+			
+			if(dev != null && serial.equals("")){
 				return dev;
 			}
 		}
