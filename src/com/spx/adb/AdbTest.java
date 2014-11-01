@@ -1,14 +1,26 @@
 package com.spx.adb;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
+import com.android.ddmlib.IShellOutputReceiver;
+import com.android.ddmlib.ScreenRecorderOptions;
+import com.android.ddmlib.ShellCommandUnresponsiveException;
+import com.android.ddmlib.TimeoutException;
 
 public class AdbTest {
 	private IDevice device = null;
 	public void init(String serial) {
+		
+
 		AndroidDebugBridge.init(false);
 		device = DeviceUtil.getDevice(serial);
 		System.out.println("device:" + device);
@@ -78,6 +90,50 @@ public class AdbTest {
 //			Log.d("package:"+node.getValue("package")+", class:"+node.getValue("class")+", text:"+node.getValue("text")+",bounds:"+node.getValue("bounds"));
 //		}
 //	}
+	FileOutputStream fos = null;
+	IShellOutputReceiver receiver = new IShellOutputReceiver(){
+		
+		@Override
+		public void addOutput(byte[] data, int offset, int length) {
+			Log.d("addOutput offset:"+offset+", length:"+length);
+			try {
+				fos.write(data, offset, length);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void flush() {
+			Log.d("flush ");
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public boolean isCancelled() {
+			return false;
+		}
+		
+	};
+	public void testRecord(){
+		
+		try {
+			fos = new FileOutputStream(new File("d:/x.mp4"));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			device.startScreenRecorder("/sdcard/a.mp4", new ScreenRecorderOptions.Builder().setSize(800, 600).setBitRate(8000000).setTimeLimit(60, TimeUnit.SECONDS).build(), receiver);
+		} catch (TimeoutException | AdbCommandRejectedException | IOException
+				| ShellCommandUnresponsiveException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @param args
@@ -91,7 +147,8 @@ public class AdbTest {
 //		Log.d("after dump");
 //		test.parseUiDump();
 //		test.clickText("主题风格");
-		test.testAppStartupTime();
+//		test.testAppStartupTime();
+		test.testRecord();
 		AndroidDebugBridge.terminate();
 		Log.d("end");
 	}

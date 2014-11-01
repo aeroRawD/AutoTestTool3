@@ -121,7 +121,7 @@ public class Util {
 			eis = process.getErrorStream();
 			dis = new BufferedReader(new InputStreamReader(is));
 			while ((line = dis.readLine()) != null) {
-				Log.d("Log","Log.Bestpay:"+line);	
+				//Log.d("Log","Log.Bestpay:"+line);	
 				//sb.append(line+"\r\n");
 				ret.add(line+"\r\n");
 			}
