@@ -375,6 +375,66 @@ public class Util {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(format);
         return sdf.format(now);
     }
+	
+	/**
+     * get file content into a string, only for little file
+     * 
+     * @param file
+     * @return
+     */
+    public static String getFileContent(File file) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            // BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "UTF-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\r\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    public static String getFileContent(String fileName) {
+        try {
+            File file = new File(fileName);
+            return getFileContent(file);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "";
+
+    }
+
+    /**
+     * 返回文件的内容, 以列表的格式, 每行文本作为列表的一个条目, 空行也作为一个条目
+     * 
+     * @param fileName
+     * @return
+     */
+    public static List<String> getFileContentLines(String fileName) {
+        File file = new File(fileName);
+        return getFileContentLines(file);
+    }
+
+    public static List<String> getFileContentLines(File file) {
+        List<String> lines = new ArrayList<String>();
+        try {
+            // BufferedReader br = new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "UTF-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
 
 	/**
 	 * @param args
