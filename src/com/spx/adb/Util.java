@@ -29,13 +29,16 @@ public class Util {
 	static Logger logger = Log.getSlientLogger(Util.class.getSimpleName());
 	public static void runAdbCmd(IDevice device, String cmd,
 			IShellOutputReceiver receiver, long timeout) {
+	    if(device==null){
+	        logger.severe("device is null when run cmd:"+cmd);
+	        return;
+	    }
 		try {
 			logger.fine("cmd:"+cmd);
 			device.executeShellCommand(cmd, receiver, timeout,
 					TimeUnit.MILLISECONDS);
 			//Log.d("cmd finished, time:"+(new Date()));
-		} catch (TimeoutException | AdbCommandRejectedException
-				| ShellCommandUnresponsiveException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -272,6 +275,13 @@ public class Util {
 
 	}
 	
+	public static void makeDir(String path){
+	    File distF = new File(path);
+        if(!distF.exists()){
+            distF.mkdirs();
+        }
+	}
+	
 	public static void createFile(String distFile, String content){
 //		try{
 //			PrintWriter pw = new PrintWriter(new File(testProject+"/ant.properties"));
@@ -281,7 +291,15 @@ public class Util {
 //		}
 		
 		try{
-			PrintWriter pw = new PrintWriter(new File(distFile));
+		    String path = distFile.substring(0, distFile.lastIndexOf("/"));
+		    makeDir(path);
+		    
+		    File distF = new File(distFile);
+		    if(!distF.exists()){
+		        distF.createNewFile();
+		    }
+		    
+			PrintWriter pw = new PrintWriter(distF);
 			pw.println(content);
 			pw.flush();
 			pw.close();
@@ -346,6 +364,17 @@ public class Util {
 		}
 		return true;
 	}
+	
+	/**
+	 * 根据日期格式返回当前时间的时间字符串
+	 * @param format
+	 * @return
+	 */
+	public static String getTimeStr(String format) {
+        Date now = new Date();
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(format);
+        return sdf.format(now);
+    }
 
 	/**
 	 * @param args

@@ -13,21 +13,21 @@ import java.util.logging.Logger;
 
 public class Log {
 	// get the global logger to configure it
-
-	private static Logger logger = null; 
-	static {
-		logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
-	    // suppress the logging output to the console
-
-	    Logger rootLogger = Logger.getLogger("");
-
-	    Handler[] handlers = rootLogger.getHandlers();
-
-	    if (handlers[0] instanceof ConsoleHandler) {
-	      rootLogger.removeHandler(handlers[0]);
-	      handlers[0].setFormatter(new TxtLoggerFormater());
-	    }
+	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+//	private static Logger logger = null; 
+//	static {
+//		logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+//
+//	    // suppress the logging output to the console
+//
+//	    Logger rootLogger = Logger.getLogger("");
+//
+//	    Handler[] handlers = rootLogger.getHandlers();
+//
+//	    if (handlers[0] instanceof ConsoleHandler) {
+//	      rootLogger.removeHandler(handlers[0]);
+//	      handlers[0].setFormatter(new TxtLoggerFormater());
+//	    }
 
 //		Handler[] handlers = logger.getHandlers();
 //		System.out.println("handlers of root:"+handlers);
@@ -41,7 +41,7 @@ public class Log {
 //			// logger.removeHandler(handlers[0]);
 //			handlers[0].setFormatter(new TxtLoggerFormater());
 //		}
-	}
+//	}
 	private static HashMap<String, Logger> loggerMap = new HashMap<String, Logger>();
 	private static HashMap<String, Logger> silentLoggerMap = new HashMap<String, Logger>();
 	
@@ -95,31 +95,31 @@ public class Log {
 	public static Logger getSlientLogger(String name) {
 		if (silentLoggerMap.get(name) == null) {
 			Logger logger = Logger.getLogger(name);
-			Handler[] handlers = logger.getHandlers();
-			System.out.println("handlers of "+name+":"+handlers);
-			if(handlers!=null){
-				for(Handler handler:handlers){
-					System.out.println("handler:"+handler);
-				}
-			}
-			if (handlers != null && handlers.length > 0
-					&& handlers[0] instanceof ConsoleHandler) {
-				//logger.removeHandler(handlers[0]);
-				handlers[0].setFormatter(new TxtLoggerFormater());
-			} else {
-				ConsoleHandler mycosoleHandler = new ConsoleHandler();
-				mycosoleHandler.setFormatter(new TxtLoggerFormater());
-				logger.addHandler(mycosoleHandler);
-			}
-			try {
-				FileHandler fileTxt = new FileHandler("log/" + name
-						+ sdf.format(new Date()));
-				fileTxt.setFormatter(new TxtLoggerFormater());
-				logger.addHandler(fileTxt);
-				
-			} catch (SecurityException | IOException e) {
-				e.printStackTrace();
-			}
+//			Handler[] handlers = logger.getHandlers();
+//			System.out.println("handlers of "+name+":"+handlers);
+//			if(handlers!=null){
+//				for(Handler handler:handlers){
+//					System.out.println("handler:"+handler);
+//				}
+//			}
+//			if (handlers != null && handlers.length > 0
+//					&& handlers[0] instanceof ConsoleHandler) {
+//				//logger.removeHandler(handlers[0]);
+//				handlers[0].setFormatter(new TxtLoggerFormater());
+//			} else {
+//				ConsoleHandler mycosoleHandler = new ConsoleHandler();
+//				mycosoleHandler.setFormatter(new TxtLoggerFormater());
+//				logger.addHandler(mycosoleHandler);
+//			}
+//			try {
+//				FileHandler fileTxt = new FileHandler("log/" + name
+//						+ sdf.format(new Date()));
+//				fileTxt.setFormatter(new TxtLoggerFormater());
+//				logger.addHandler(fileTxt);
+//				
+//			} catch (SecurityException | IOException e) {
+//				e.printStackTrace();
+//			}
 
 			silentLoggerMap.put(name, logger);
 		}
