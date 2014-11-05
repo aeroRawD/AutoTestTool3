@@ -17,6 +17,7 @@ import com.android.ddmlib.MultiLineReceiver;
 import com.android.ddmlib.RawImage;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
+import com.log.Log;
 
 /**
  * 测试应用平均启动时间

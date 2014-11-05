@@ -1,4 +1,6 @@
-package com.spx.adb;
+package com.att.svn;
+
+import com.spx.adb.Util;
 
 public class SvnUtil {
 	public static String getValue(String line, String prefix){

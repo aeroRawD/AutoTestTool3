@@ -1,6 +1,10 @@
 package com.spx.adb;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
@@ -16,6 +20,16 @@ public class DeviceUtil {
 				return null;
 			deviceMap.put(serial, dev);
 		}
+		
+		IDevice d = deviceMap.get(serial);
+		if(!d.isOnline()){
+			IDevice dev = createDevice(serial);
+			if (dev == null)
+				return null;
+			deviceMap.put(serial, dev);
+		}
+		
+		
 		return deviceMap.get(serial);
 	}
 	
@@ -24,6 +38,18 @@ public class DeviceUtil {
 		if (devices == null || devices.length == 0)
 			return null;
 		return devices[0];
+	}
+	
+	public static List<IDevice> getOnlineDevices(){
+		List<IDevice> devs = new ArrayList<IDevice>();
+		Set<String> keySet = deviceMap.keySet();
+		Iterator<String> iterator = keySet.iterator();
+		while(iterator.hasNext()){
+			String serial = iterator.next();
+			devs.add(deviceMap.get(serial));
+		}
+		
+		return devs;
 	}
 	
 	public static IDevice[] getDevices(){
@@ -79,5 +105,14 @@ public class DeviceUtil {
 				break;
 			}
 		}
+	}
+	
+	public static void main(String[] args){
+		AndroidDebugBridge.init(false);
+		IDevice devices[] = getDevices();
+		for(IDevice dev:devices){
+			System.err.print("dev:"+dev.getName()+", serial:"+dev.getSerialNumber());
+		}
+		AndroidDebugBridge.terminate();
 	}
 }

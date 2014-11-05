@@ -5,6 +5,9 @@ import java.io.FilenameFilter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import com.att.svn.SvnManager;
+import com.log.Log;
+
 public class Builder {
 
 	// public void buildTestProject(String testProject, String testedProject) {
@@ -21,23 +24,51 @@ public class Builder {
 		return instance;
 	}
 
-	public void buildAll() {
-		boolean appUpdated = SvnManager.getInstance().isUpdated(
-				SystemEnv.APP_PROJECT_PATH);
-		if (appUpdated || !isApkCreated(SystemEnv.APP_PROJECT_PATH)) {
-			buildPowerword7(SystemEnv.APP_PROJECT_PATH, "debug");
+	private boolean appUpdated = false;
+	private boolean testAppUpdated = false;
+	private boolean appBuilded = false;
+	private boolean testAppBuilded = false;
+	
+//	public void buildAll() {
+//		appUpdated = SvnManager.getInstance().isUpdated(
+//				SystemEnv.APP_PROJECT_PATH);
+//		if (appUpdated || !isApkCreated(SystemEnv.APP_PROJECT_PATH)) {
+//			appBuilded = buildPowerword7(SystemEnv.APP_PROJECT_PATH, "debug");
+//		}
+//		testAppUpdated = SvnManager.getInstance().isUpdated(
+//				SystemEnv.TESTAPP_PROJECT_PATH);
+//		if (appUpdated || testAppUpdated
+//				|| !isApkCreated(SystemEnv.TESTAPP_PROJECT_PATH)) {
+//			Util.createFile(SystemEnv.TESTAPP_PROJECT_PATH + "/ant.properties",
+//					"tested.project.dir=" + SystemEnv.APP_PROJECT_PATH);
+//			testAppBuilded = buildTestProject(SystemEnv.TESTAPP_PROJECT_PATH, "debug");
+//		}
+//	}
+	
+	public boolean buildPath(String localpath){
+		if(SystemEnv.APP_PROJECT_PATH.equals(localpath)){
+			return buildPowerword7("debug");
+		} else if(SystemEnv.TESTAPP_PROJECT_PATH.equals(localpath)){
+			return buildTestProject("debug");
 		}
-		boolean testAppUpdated = SvnManager.getInstance().isUpdated(
-				SystemEnv.TESTAPP_PROJECT_PATH);
-		if (appUpdated || testAppUpdated
-				|| !isApkCreated(SystemEnv.TESTAPP_PROJECT_PATH)) {
-			Util.createFile(SystemEnv.TESTAPP_PROJECT_PATH + "/ant.properties",
-					"tested.project.dir=" + SystemEnv.APP_PROJECT_PATH);
-			buildTestProject(SystemEnv.TESTAPP_PROJECT_PATH, "debug");
-		}
+		return false;
 	}
 	
-
+	public boolean isAppUpdated(){
+		return appUpdated;
+	}
+	
+	public boolean isTestAppUpdated(){
+		return testAppUpdated;
+	}
+	
+	public boolean isAppApkBuilded(){
+		return appBuilded;
+	}
+	
+	public boolean isTestAppApkBuilded(){
+		return testAppBuilded;
+	}
 	
 	public String getAppApkFileName() {
 		return SystemEnv.APP_PROJECT_PATH + "/bin/Powerword7-debug.apk";
@@ -47,16 +78,16 @@ public class Builder {
 		return SystemEnv.TESTAPP_PROJECT_PATH + "/bin/Powerword7Test-debug.apk";
 	}
 
-	private boolean buildPowerword7(String projectpath, String buildType) {
+	public boolean buildPowerword7(String buildType) {
 
-		copyBuildFileToPowerword7(projectpath);
+		copyBuildFileToPowerword7(SystemEnv.APP_PROJECT_PATH);
 
-		String cmd = SystemEnv.ant + " -f " + projectpath + "/build.xml "
+		String cmd = SystemEnv.ant + " -f " + SystemEnv.APP_PROJECT_PATH + "/build.xml clean "
 				+ buildType;
 		Log.d("cmd:" + cmd);
 		// String[] cmds = new
 		// String[]{ant,"-f","d:/data/powerword7/build.xml","debug"};
-		return buildProject(cmd, projectpath);
+		return buildProject(cmd, SystemEnv.APP_PROJECT_PATH);
 	}
 
 	private boolean buildProject(String cmd, String projectpath) {
@@ -116,12 +147,12 @@ public class Builder {
 		return files != null && files.length != 0;
 	}
 
-	private boolean buildTestProject(String projectpath, String buildType) {
+	public boolean buildTestProject(String buildType) {
 
-		String cmd = SystemEnv.ant + " -f " + projectpath + "/build.xml "
+		String cmd = SystemEnv.ant + " -f " + SystemEnv.TESTAPP_PROJECT_PATH + "/build.xml clean "
 				+ buildType;
 		Log.d("cmd:" + cmd);
-		return buildProject(cmd, projectpath);
+		return buildProject(cmd, SystemEnv.TESTAPP_PROJECT_PATH);
 	}
 
 	private void copyBuildFileToPowerword7(String projectpath) {
@@ -132,7 +163,7 @@ public class Builder {
 	public static void main(String[] args) {
 		Builder builder = new Builder();
 		// builder.build();
-		Builder.getInstance().buildAll();
+//		Builder.getInstance().buildAll();
 		// builder.buildPowerword7("d:/data/powerword7", "debug");
 		// Util.createFile("d:/data/test/ant.properties",
 		// "tested.project.dir=d:/data/powerword7");

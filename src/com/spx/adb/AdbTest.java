@@ -15,6 +15,7 @@ import com.android.ddmlib.IShellOutputReceiver;
 import com.android.ddmlib.ScreenRecorderOptions;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.TimeoutException;
+import com.log.Log;
 
 public class AdbTest {
 	private IDevice device = null;
@@ -141,7 +142,7 @@ public class AdbTest {
 	public static void main(String[] args) {
 		Log.d("start");
 		AdbTest test = new AdbTest();
-		test.init("");
+		test.init("2008edd8f316");
 		Log.d("midle");
 //		test.dumpUi();
 //		Log.d("after dump");

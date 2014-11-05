@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import com.android.ddmlib.AdbCommandRejectedException;
 import com.android.ddmlib.IDevice;
@@ -22,13 +23,14 @@ import com.android.ddmlib.MultiLineReceiver;
 import com.android.ddmlib.ShellCommandUnresponsiveException;
 import com.android.ddmlib.SyncException;
 import com.android.ddmlib.TimeoutException;
+import com.log.Log;
 
 public class Util {
-
+	static Logger logger = Log.getSlientLogger(Util.class.getSimpleName());
 	public static void runAdbCmd(IDevice device, String cmd,
 			IShellOutputReceiver receiver, long timeout) {
 		try {
-			Log.d("cmd:"+cmd);
+			logger.fine("cmd:"+cmd);
 			device.executeShellCommand(cmd, receiver, timeout,
 					TimeUnit.MILLISECONDS);
 			//Log.d("cmd finished, time:"+(new Date()));
@@ -119,17 +121,19 @@ public class Util {
 			process = runtime.exec(cmds);
 			is = process.getInputStream();
 			eis = process.getErrorStream();
-			dis = new BufferedReader(new InputStreamReader(is));
+			dis = new BufferedReader(new InputStreamReader(is, "gbk"));
 			while ((line = dis.readLine()) != null) {
-				//Log.d("Log","Log.Bestpay:"+line);	
+				//Log.d("Log","输出:"+line);
+				logger.fine(line);
 				//sb.append(line+"\r\n");
 				ret.add(line+"\r\n");
 			}
 			
-			edis= new BufferedReader(new InputStreamReader(eis));
+			edis= new BufferedReader(new InputStreamReader(eis, "gbk"));
 			while ((line = edis.readLine()) != null) {
 				//Log.d("Log","Log.Bestpay:"+line);	
 				//sb.append(line+"\r\n");
+				logger.severe(line);
 				ret.add(line+"\r\n");
 			}
 		} catch (IOException ie) {
@@ -201,7 +205,8 @@ public class Util {
 				int length;
 				while ((byteread = inStream.read(buffer)) != -1) {
 					bytesum += byteread; // 字节数 文件大小
-					System.out.println(bytesum);
+					//System.out.println(bytesum);
+					//logger.info(bytesum);
 					fs.write(buffer, 0, byteread);
 				}
 				inStream.close();
@@ -288,6 +293,11 @@ public class Util {
 	public static boolean isFileExist(String filePath){
 		File f = new File(filePath);
 		return f.exists();
+	}
+	
+	public static boolean deleteFile(String filePath){
+		File f = new File(filePath);
+		return f.delete();
 	}
 	
 	/**
