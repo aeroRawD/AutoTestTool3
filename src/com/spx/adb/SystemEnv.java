@@ -3,6 +3,9 @@ package com.spx.adb;
 import java.util.HashMap;
 
 public class SystemEnv {
+    
+    public static final String admin = "shaopengxiang@kingsoft.com";
+    
     public static final String user = "shaopengxiang";
     public static final String pwd = "hcPoIUIPLf";
 	public static final String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";

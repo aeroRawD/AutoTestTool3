@@ -33,7 +33,7 @@ public class TxtLoggerFormater extends Formatter {
             buf.append("\t"+throwable);
         }
 		buf.append("\t" + formatMessage(rec)+"\r\n");
-		buf.append("\r\n");
+//		buf.append("\r\n");
 
 		return buf.toString();
 		

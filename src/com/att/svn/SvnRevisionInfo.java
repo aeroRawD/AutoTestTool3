@@ -2,6 +2,7 @@ package com.att.svn;
 
 import java.util.List;
 
+import com.log.Log;
 import com.spx.adb.Util;
 
 public class SvnRevisionInfo {
@@ -33,11 +34,13 @@ public class SvnRevisionInfo {
             }
         }
         revisionInfo = content.get(startLine);
+        Log.d("revisionInfo:"+revisionInfo);
         parseRevisionInfo();
         comment = content.get(endLine);
-        for (int i = startLine + 1; i < endLine; i++) {
+        for (int i = startLine + 1; i <endLine; i++) {
             if(!Util.isNull(content.get(i))){
-                changedPath += content.get(i) + "\r\n";
+                //Log.d("content.get("+i+").trim():"+content.get(i).trim());
+                changedPath += content.get(i).trim() + "\r\n";
             }
         }
         // revisionContent = content;
@@ -52,13 +55,16 @@ public class SvnRevisionInfo {
         if (info.startsWith("revision info:")) {
             info = info.substring(14);
         }
-
-        String[] parts = info.split("|");
-        if (parts.length == 4) {
-            revId = parts[0].trim();
-            author = parts[1].trim();
-            submitTime = parts[2].trim();
-            lineCount = parts[3].trim();
+        
+        Log.d("info:"+info);
+        List<String> parts = Util.split(info, "|");
+        Log.d("parts.size:"+parts.size());
+        if (parts.size() == 4) {
+            revId = parts.get(0);
+            author = parts.get(1);
+            submitTime = parts.get(2);
+            lineCount = parts.get(3);
+            Log.d("revId:"+revId);
         }
     }
 
@@ -83,7 +89,7 @@ public class SvnRevisionInfo {
     }
 
     public String getRevisionDetail() {
-        return revisionInfo + "\r\n" + changedPath + "\r\n" + "ÐÞ¸ÄËµÃ÷: "
+        return revisionInfo + "\r\n" + changedPath + "\r\n" + "ä¿®æ”¹è¯´æ˜Ž: "
                 + comment;
     }
 }

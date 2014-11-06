@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.android.ddmlib.AdbCommandRejectedException;
@@ -33,14 +34,20 @@ public class Util {
 	        logger.severe("device is null when run cmd:"+cmd);
 	        return;
 	    }
-		try {
-			logger.fine("cmd:"+cmd);
-			device.executeShellCommand(cmd, receiver, timeout,
-					TimeUnit.MILLISECONDS);
-			//Log.d("cmd finished, time:"+(new Date()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    int tryTimes = 3;
+	    while(tryTimes>0){
+	        try {
+	            logger.fine("cmd:"+cmd);
+	            device.executeShellCommand(cmd, receiver, timeout,
+	                    TimeUnit.MILLISECONDS);
+	            //Log.d("cmd finished, time:"+(new Date()));
+	            return ;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        tryTimes -- ;
+	    }
+		
 	}
 	
 
@@ -336,16 +343,43 @@ public class Util {
 	 * @param apkFileName
 	 * @return
 	 */
-	public static boolean installApk(IDevice device, String apkFileName){
-		String returnStr;
-		try {
-			returnStr = device.installPackage(apkFileName, true);
-		} catch (InstallException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return Util.isNull(returnStr);
+	public static boolean installApk(IDevice device, String apkFileName, String packageName){
+	    if(!removePackage(device, packageName)){
+	        logger.log(Level.INFO, "卸载 "+ packageName+" 失败");
+        }else {
+            logger.log(Level.INFO, "卸载 "+ packageName+" 成功");
+        }
+        return installPackage(device, apkFileName);
 	}
+	
+	    public static boolean installPackage(IDevice device, String path) {
+	        try {
+	            String result = device.installPackage(path, true);
+	            if (result != null) {
+	                logger.log(Level.SEVERE, "Got error installing package: "+ result);
+	                return false;
+	            }
+	            return true;
+	        } catch (InstallException e) {
+	            logger.log(Level.SEVERE, "Error installing package: " + path, e);
+	            return false;
+	        }
+	    }
+
+	    public static boolean removePackage(IDevice device, String packageName) {
+	        try {
+	            String result = device.uninstallPackage(packageName);
+	            if (result != null) {
+	                logger.log(Level.SEVERE, "Got error uninstalling package "+ packageName + ": " +
+	                        result);
+	                return false;
+	            }
+	            return true;
+	        } catch (InstallException e) {
+	            logger.log(Level.SEVERE, "Error installing package: " + packageName, e);
+	            return false;
+	        }
+	    }
 	
 	/**
 	 * 从手机中pull 文件
@@ -436,6 +470,15 @@ public class Util {
         return lines;
     }
 
+    public static List<String> split(String str, String delim){
+        java.util.StringTokenizer st = new StringTokenizer(str, delim);
+        List<String> sps = new ArrayList<String>();
+        while(st.hasMoreTokens()){
+            String token = st.nextToken().trim();
+            sps.add(token);
+        }
+        return sps;
+    }
 	/**
 	 * @param args
 	 */

@@ -14,12 +14,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.log.Log;
+import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
 
 public class MailSender {
     private Logger logger = Log.getSlientLogger("MailSender");
 
-    private static final String to = "shaopengxiang@kingsoft.com";
+    private static final String to = SystemEnv.admin;
     // Assuming you are sending email from localhost
     // SMTP server ip
     private static final String host = "114.255.44.145";
