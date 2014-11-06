@@ -10,8 +10,9 @@ import com.log.Log;
 
 public class Main {
 	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-	ApplicationBuilder appBuiler = null;
-	public void Main(){
+	ApplicationBuilder appBuiler = ApplicationBuilder.getInstance();
+	
+	public Main(){
 		Log.setup();
 		init();
 	}
@@ -22,8 +23,6 @@ public class Main {
 
 	private void init() {
 		AndroidDebugBridge.init(false);
-		
-		appBuiler = ApplicationBuilder.getInstance();
 	}
 
 	private void startMonitors() {

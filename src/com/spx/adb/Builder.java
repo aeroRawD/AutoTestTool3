@@ -2,10 +2,8 @@ package com.spx.adb;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.PrintWriter;
 import java.util.List;
 
-import com.att.svn.SvnManager;
 import com.log.Log;
 
 public class Builder {

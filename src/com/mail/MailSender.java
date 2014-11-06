@@ -125,6 +125,7 @@ public class MailSender {
             authentication = new PasswordAuthentication(username, password);
         }
 
+        @Override
         protected PasswordAuthentication getPasswordAuthentication() {
             return authentication;
         }

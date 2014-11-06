@@ -85,7 +85,7 @@ public class DeviceMonitor extends Thread {
 		devices.clear();
 		List<String> serials = getOnlineDeviceSerials();
 		for (String s : serials) {
-			devices.add(DeviceUtil.getDevice(s));
+			devices.add(DeviceUtil.createDevice(s));
 		}
 		return devices;
 	}
@@ -107,7 +107,8 @@ public class DeviceMonitor extends Thread {
 		return false;
 	}
 
-	public void run() {
+	@Override
+    public void run() {
 		while (true) {
 			
 			
@@ -219,6 +220,7 @@ public class DeviceMonitor extends Thread {
 					msg+=",";
 				}
 				msg+=deleted.get(i).serial;
+				DeviceUtil.onDeviceRemove(deleted.get(i).serial);
 			}
 			logger.info(msg);
 		}

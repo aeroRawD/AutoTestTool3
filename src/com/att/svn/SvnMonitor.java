@@ -29,8 +29,9 @@ public class SvnMonitor extends Thread {
 		return sInstance;
 	}
 
-	public void run() {
-		AndroidDebugBridge.init(false);
+	@Override
+    public void run() {
+		//AndroidDebugBridge.init(false);
 		while (true) {
 			
 			try {

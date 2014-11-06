@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +22,7 @@ public class AdbTest {
 		
 
 		AndroidDebugBridge.init(false);
-		device = DeviceUtil.getDevice(serial);
+		device = DeviceUtil.createDevice(serial);
 		System.out.println("device:" + device);
 		if(device ==null){
 			throw new RuntimeException("failed to get device");
