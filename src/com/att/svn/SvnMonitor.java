@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.android.ddmlib.AndroidDebugBridge;
+import com.att.build.ApplicationBuilder;
 import com.log.Log;
 import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
@@ -33,13 +34,19 @@ public class SvnMonitor extends Thread {
 		while (true) {
 			
 			try {
-				checkSvnUpdate();
+                if (!isInBuilding()) {
+                    checkSvnUpdate();
+                }
 				
 				Util.sleep(SVN_UPDATE_TIME);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private boolean isInBuilding(){
+	    return ApplicationBuilder.getInstance().isRunningTest();
 	}
 
 	private void checkSvnUpdate(){

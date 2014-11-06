@@ -134,7 +134,7 @@ public class Util {
 			dis = new BufferedReader(new InputStreamReader(is, "gbk"));
 			while ((line = dis.readLine()) != null) {
 				//Log.d("Log","输出:"+line);
-				logger.fine(line);
+				logger.info(line);
 				//sb.append(line+"\r\n");
 				ret.add(line+"\r\n");
 			}

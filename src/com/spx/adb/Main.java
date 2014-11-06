@@ -10,7 +10,7 @@ import com.log.Log;
 
 public class Main {
 	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-	
+	ApplicationBuilder appBuiler = null;
 	public void Main(){
 		Log.setup();
 		init();
@@ -22,6 +22,8 @@ public class Main {
 
 	private void init() {
 		AndroidDebugBridge.init(false);
+		
+		appBuiler = ApplicationBuilder.getInstance();
 	}
 
 	private void startMonitors() {
@@ -42,7 +44,7 @@ public class Main {
 		SvnMonitor svnMonitor = SvnMonitor.getInstance();
 		svnMonitor.addWatchedUrl(SystemEnv.APP_PROJECT_URL);
 		svnMonitor.addWatchedUrl(SystemEnv.TESTAPP_PROJECT_URL);
-		svnMonitor.setListener(new ApplicationBuilder());
+		svnMonitor.setListener(appBuiler);
 		svnMonitor.start();
 	}
 
