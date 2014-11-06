@@ -1,9 +1,11 @@
 package com.att.svn;
 
+import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.log.Log;
+import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
 
 public class SvnManager {
@@ -25,6 +27,14 @@ public class SvnManager {
 	 * @return
 	 */
 	public boolean isUpdated(String projectPath) {
+	    
+	    if(!Util.isFileExist(projectPath)){
+	        File f=new File(projectPath);
+	        f.mkdirs();
+	        
+	        checkoutProject(SystemEnv.getUrlForLocalpath(projectPath), projectPath, SystemEnv.user, SystemEnv.pwd);
+	    }
+	    
 		List<String> updateContent = update(projectPath);
 		
 		if(Util.isFileExist(projectPath+"/s.txt")){
