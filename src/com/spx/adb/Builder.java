@@ -44,9 +44,9 @@ public class Builder {
     // }
     // }
 
-    public boolean buildPath(String localpath) {
+    public boolean buildPath(String localpath, int tryTimes, StringBuilder buildError) {
         if (SystemEnv.APP_PROJECT_PATH.equals(localpath)) {
-            return buildPowerword7("debug");
+            return buildPowerword7("debug", tryTimes, buildError);
         } else if (SystemEnv.TESTAPP_PROJECT_PATH.equals(localpath)) {
             if (!Util.isFileExist(SystemEnv.TESTAPP_PROJECT_PATH
                     + "/ant.properties")) {
@@ -55,7 +55,7 @@ public class Builder {
                         + SystemEnv.APP_PROJECT_PATH);
             }
 
-            return buildTestProject("debug");
+            return buildTestProject("debug", tryTimes, buildError);
         }
         return false;
     }
@@ -84,7 +84,7 @@ public class Builder {
         return SystemEnv.TESTAPP_PROJECT_PATH + "/bin/Powerword7Test-debug.apk";
     }
 
-    public boolean buildPowerword7(String buildType) {
+    public boolean buildPowerword7(String buildType, int tryTimes, StringBuilder buildError) {
 
         copyBuildFileToPowerword7(SystemEnv.APP_PROJECT_PATH);
 
@@ -93,11 +93,10 @@ public class Builder {
         Log.d("cmd:" + cmd);
         // String[] cmds = new
         // String[]{ant,"-f","d:/data/powerword7/build.xml","debug"};
-        return buildProject(cmd, SystemEnv.APP_PROJECT_PATH);
+        return buildProject(cmd, SystemEnv.APP_PROJECT_PATH, tryTimes, buildError);
     }
 
-    private boolean buildProject(String cmd, String projectpath) {
-        int tryTimes = 10;
+    private boolean buildProject(String cmd, String projectpath, int tryTimes, StringBuilder buildError) {
         for (int i = 0; i < tryTimes; i++) {
 
             List<String> cmdOutput = Util.getCmdOutput(cmd);
@@ -105,10 +104,32 @@ public class Builder {
                 Log.d("apk编译成功");
                 return true;
             }
-
+            
+            if (buildError != null)
+                buildError.append(getBuildError(cmdOutput));
         }
         Log.d("apk编译失败!");
         return false;
+    }
+    
+    private String getBuildError(List<String> output) {
+        boolean startCapture = false;
+        boolean stopCapture = false;
+        String error = "";
+        for (int i = 0; i < output.size(); i++) {
+            String line = output.get(i);
+            if (startCapture && !stopCapture) {
+                error += line;
+            }
+            if (line.trim().equals("-compile:")) {
+                startCapture = true;
+            }
+            if (line.trim().equals("BUILD FAILED")) {
+                stopCapture = true;
+            }
+        }
+
+        return error;
     }
 
     private boolean isApkBuildSuccessful(List<String> content, String path) {
@@ -153,12 +174,12 @@ public class Builder {
         return files != null && files.length != 0;
     }
 
-    public boolean buildTestProject(String buildType) {
+    public boolean buildTestProject(String buildType, int tryTimes, StringBuilder buildError) {
 
         String cmd = SystemEnv.ant + " -f " + SystemEnv.TESTAPP_PROJECT_PATH
                 + "/build.xml clean " + buildType;
         Log.d("cmd:" + cmd);
-        return buildProject(cmd, SystemEnv.TESTAPP_PROJECT_PATH);
+        return buildProject(cmd, SystemEnv.TESTAPP_PROJECT_PATH, tryTimes, buildError);
     }
 
     private void copyBuildFileToPowerword7(String projectpath) {

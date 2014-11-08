@@ -9,6 +9,7 @@ public class SystemEnv {
     public static final String user = "shaopengxiang";
     public static final String pwd = "hcPoIUIPLf";
 	public static final String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";
+	public static final String lint ="D:/Android/adt-bundle-windows-x86_64-20140702/sdk/tools/lint.bat";
 	
 	public static final String APP_PACKAGE_NAME="com.kingsoft";
 	public static final String TESTAPP_PACKAGE_NAME="com.kingsoft.test";

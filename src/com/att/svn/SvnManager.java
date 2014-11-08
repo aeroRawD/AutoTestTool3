@@ -90,8 +90,7 @@ public class SvnManager {
 		SvnManager svn = new SvnManager();
 		String url = "http://trac.s.iciba.com/svn/ciba-mobile/android/Testing/TestPowerword7";
 		String localpath = "d:/data/test";
-		String user = "shaopengxiang";
-		String pwd = "hcPoIUIPLf";
+
 
 		// url = "http://trac.s.iciba.com/svn/ciba-mobile/android/Powerword7";
 		// localpath="d:/data/powerword7";

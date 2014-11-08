@@ -1,4 +1,4 @@
-package com.mail;
+package com.chart;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -18,20 +18,24 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DatasetUtilities;
 
-public class CreateJFreeChartBarColor {
+import com.mail.CustomRenderer;
 
+public class A3BarChartCreator {
     /**
      * 创建JFreeChart Bar Chart（柱状图）
      */
     public static void main(String[] args) {
         // 步骤1：创建CategoryDataset对象（准备数据）
-        CategoryDataset dataset = createDataset();
+        CategoryDataset dataset = createDoubleBarDataset();
         // 步骤2：根据Dataset 生成JFreeChart对象，以及做相应的设置
-        JFreeChart freeChart = createChart(dataset);
+        JFreeChart freeChart = createChart("用例执行数据统计","日期","数目", true, dataset);
         // 步骤3：将JFreeChart对象输出到文件，Servlet输出流等
         saveAsFile(freeChart, "E:\\bar.png", 500, 400);
     }
@@ -65,10 +69,11 @@ public class CreateJFreeChartBarColor {
     }
 
     // 根据CategoryDataset生成JFreeChart对象
-    public static JFreeChart createChart(CategoryDataset categoryDataset) {
-        JFreeChart jfreechart = ChartFactory.createBarChart("学生统计图", // 标题
-                "学生姓名", // categoryAxisLabel （category轴，横轴，X轴的标签）
-                "年龄", // valueAxisLabel（value轴，纵轴，Y轴的标签）
+    public static JFreeChart createChart(String charTitle, String horizontalTitle,String verticalTitle,boolean lastGood, 
+            CategoryDataset categoryDataset) {
+        JFreeChart jfreechart = ChartFactory.createBarChart(charTitle, // 标题
+                horizontalTitle, // categoryAxisLabel （category轴，横轴，X轴的标签）
+                verticalTitle, // valueAxisLabel（value轴，纵轴，Y轴的标签）
                 categoryDataset, // dataset
                 PlotOrientation.VERTICAL, false, // legend
                 false, // tooltips
@@ -130,8 +135,9 @@ public class CreateJFreeChartBarColor {
         vn.setLabelFont(new Font("黑体", Font.PLAIN, 12));
         // jfreechart.getLegend().setItemFont(new Font("宋体", Font.PLAIN, 12));
 
-        // 使用自定义的渲染器
+//        // 使用自定义的渲染器
         CustomRenderer renderer = new CustomRenderer();
+        renderer.setLastGood(lastGood);
         // 设置柱子宽度
         renderer.setMaximumBarWidth(0.2);
         // 设置柱子高度
@@ -141,7 +147,7 @@ public class CreateJFreeChartBarColor {
         // 设置柱子边框可见
         renderer.setDrawBarOutline(true);
         // 设置每个地区所包含的平行柱的之间距离
-        renderer.setItemMargin(0.5);
+        renderer.setItemMargin(0.01);
         jfreechart.getRenderingHints().put(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
@@ -149,6 +155,8 @@ public class CreateJFreeChartBarColor {
         renderer.setIncludeBaseInRange(true);
         renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         renderer.setBaseItemLabelsVisible(true);
+//        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+//        renderer.setItemMargin(0.01);
         plot.setRenderer(renderer);
         // 设置柱的透明度
         plot.setForegroundAlpha(1.0f);
@@ -160,13 +168,86 @@ public class CreateJFreeChartBarColor {
     }
 
     // 创建CategoryDataset对象
-    public static CategoryDataset createDataset() {
-        double[][] data = new double[][] { { 25, 24, 40, 12, 33, 33 }  };
-        String[] rowKeys = { "" };
+    public static CategoryDataset createDoubleBarDataset() {
+        double[][] data = new double[][] { { 25, 24, 40, 12, 33, 33 } ,{ 25, 24, 40, 12, 33, 33 } };
+        String[] rowKeys = { "total","fail" };
         String[] columnKeys = { "张三", "李四", "王五", "马六", "陈七", "赵八" };
         CategoryDataset dataset = DatasetUtilities.createCategoryDataset(
                 rowKeys, columnKeys, data);
         return dataset;
     }
+    
+    // 创建CategoryDataset对象
+    public static CategoryDataset createDataset2() {
+//        double[][] data = new double[][] { { 25, 24, 40, 12, 33, 33 }  };
+//        String[] rowKeys = { "" };
+//        String[] columnKeys = { "张三", "李四", "王五", "马六", "陈七", "赵八" };
+//        CategoryDataset dataset = DatasetUtilities.createCategoryDataset(
+//                rowKeys, columnKeys, data);
+        DefaultCategoryDataset linedataset = new DefaultCategoryDataset();
+    //  各曲线名称
+        String series1 = "总数";
+        String series2 = "失败";
 
+        //    横轴名称(列名称)
+        String type1 = "1月";
+        String type2 = "2月";
+        String type3 = "3月";
+
+        linedataset.addValue(100, series1, type1);
+        linedataset.addValue(110, series1, type2);
+        linedataset.addValue(120, series1, type3);
+        linedataset.addValue(120, series1, "4");
+        linedataset.addValue(120, series1, "5");
+        linedataset.addValue(130, series1, "6");
+        linedataset.addValue(110, series1, "7");
+        linedataset.addValue(100, series1, "8");
+        linedataset.addValue(160, series1, "9");
+
+        linedataset.addValue(10, series2, type1);
+        linedataset.addValue(11, series2, type2);
+        linedataset.addValue(8, series2, type3);
+        linedataset.addValue(12, series2, "4");
+        linedataset.addValue(12, series2, "5");
+        linedataset.addValue(13, series2, "6");
+        linedataset.addValue(4, series2, "7");
+        linedataset.addValue(5, series2, "8");
+        linedataset.addValue(5, series2, "9");
+
+        return linedataset;
+    }
+    
+    public static CategoryDataset createDataset3() {
+
+        double[][] data = new double[][] { { 672, 766, 223, 540, 126 },
+          { 325, 521, 210, 340, 106 }, { 332, 256, 523, 240, 526 } };// 设置数据
+        String[] rowKeys = { "苹果", "梨子", "葡萄" };// 行标志
+        String[] columnKeys = { "北京", "上海", "广州", "成都", "深圳" };// 列标志
+        CategoryDataset linedataset = DatasetUtilities.createCategoryDataset(
+          rowKeys, columnKeys, data); // 建立数据集
+
+        return linedataset;
+       } 
+    
+    /**    
+     * 创建CategoryDataset对象    
+     *     
+     */    
+    public static CategoryDataset createDataset4() {     
+             
+        String []rowKeys = {"One", "Two", "Three"};     
+        String []colKeys = {"1987", "1997", "2007"};     
+             
+        double [][] data = {     
+                {50, 20, 30},     
+                {20, 10D, 40D},     
+                {40, 30.0008D, 38.24D},     
+        };     
+             
+        //也可以使用以下代码     
+        //DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();     
+        //categoryDataset.addValue(10, "rowKey", "colKey");     
+             
+        return DatasetUtilities.createCategoryDataset(rowKeys, colKeys, data);             
+    }  
 }

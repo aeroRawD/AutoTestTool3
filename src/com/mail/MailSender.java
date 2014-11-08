@@ -3,6 +3,7 @@ package com.mail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -63,6 +64,22 @@ public class MailSender {
 
     public static MailSender getInstance() {
         return sInstance;
+    }
+    
+    private HashMap<String, Long> notifyDataMap = new HashMap<String, Long>();
+    /**
+     * 发送编译不过的邮件提醒
+     */
+    public void sendBuildFailedNotify(String url, String buildError){
+        if(notifyDataMap.get(url)!=null){
+            long lastNotifyTime = notifyDataMap.get(url);
+            if(System.currentTimeMillis()- lastNotifyTime < 60*60*1000){
+                logger.info("alert mail already sent nearby.");
+                return;
+            }
+        }
+        sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), true);
+        notifyDataMap.put(url, System.currentTimeMillis());
     }
 
     public void sendTxtMail(List<String> recipients, String subject,
@@ -249,15 +266,9 @@ public class MailSender {
       mailProps.put("mail.smtp.port", "587");
       mailProps.put("mail.smtp.auth", "true");
       // final, because we're using it in the closure below
-      final PasswordAuthentication usernamePassword = new PasswordAuthentication(
-          "shaopengxiang@kingsoft.com", "spx@HW09");
-      Authenticator auth = new Authenticator() {
-        protected PasswordAuthentication getPasswordAuthentication() {
-          return usernamePassword;
-        }
-      };
+
       Session session = Session.getInstance(mailProps, authenticator);
-      session.setDebug(true);
+      session.setDebug(false);
       return session;
 
     }
