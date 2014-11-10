@@ -48,6 +48,11 @@ public class DeviceUtil {
 	
 	public static List<IDevice> getOnlineDevices(){
 		List<IDevice> devs = new ArrayList<IDevice>();
+		
+		if(deviceCache.isEmpty()){
+		    createDevice("not_exist");
+		}
+		
 		Set<String> keySet = deviceCache.keySet();
 		Iterator<String> iterator = keySet.iterator();
 		while(iterator.hasNext()){

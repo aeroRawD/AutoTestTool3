@@ -24,6 +24,7 @@ import com.android.ddmlib.MultiLineReceiver;
 import com.android.ddmlib.SyncException;
 import com.android.ddmlib.TimeoutException;
 import com.log.Log;
+import com.spx.adb.DeviceMonitor.Device;
 
 public class Util {
 	static Logger logger = Log.getSlientLogger(Util.class.getSimpleName());
@@ -351,6 +352,26 @@ public class Util {
         return installPackage(device, apkFileName);
 	}
 	
+	public static boolean installApk(String serial, String apkFileName, String packageName){
+        if(!removePackage(serial, packageName)){
+            logger.log(Level.INFO, "卸载 "+ packageName+" 失败");
+        }else {
+            logger.log(Level.INFO, "卸载 "+ packageName+" 成功");
+        }
+        return installApk(serial, apkFileName);
+    }
+	
+	public static boolean installApk(String serial, String path){
+	    List<String> cmdOutput = Util.getCmdOutput("adb -s "+serial+" install -r "+path);
+	    //List<String> cmdOutput = Util.getCmdOutput("adb -s 7148000200000001 install -r D:/data/test/bin/Powerword7Test-debug.apk");
+	    logger.log(Level.INFO, "安装apk"+path+" to ["+serial+"]");
+	    for(String s:cmdOutput){
+	        logger.log(Level.INFO, s);
+	    }
+	    sleep(2000);
+        return true;
+	}
+	
 	    public static boolean installPackage(IDevice device, String path) {
 	        try {
 	            String result = device.installPackage(path, true);
@@ -360,11 +381,15 @@ public class Util {
 	            }
 	            return true;
 	        } catch (InstallException e) {
+	            e.printStackTrace();
 	            logger.log(Level.SEVERE, "Error installing package: " + path, e);
 	            return false;
 	        }
 	    }
-
+	    public static boolean removePackage(String serial, String packageName) {
+	        Util.getCmdOutput("adb -s "+serial+" uninstall "+packageName);
+	        return true;
+	    }
 	    public static boolean removePackage(IDevice device, String packageName) {
 	        try {
 	            String result = device.uninstallPackage(packageName);
@@ -441,6 +466,57 @@ public class Util {
         return "";
 
     }
+    
+    public static List<String> installPowerwordAppToAllOnlineDevices(){
+        return installApkToAllOnlineDevices(SystemEnv.APP_PACKAGE_NAME, Builder.getInstance().getAppApkFileName());
+    }
+    
+    public static List<String> installTestAppToAllOnlineDevices(){
+        return installApkToAllOnlineDevices(SystemEnv.TESTAPP_PACKAGE_NAME, Builder.getInstance().getTestAppApkFileName());
+    }
+    
+    /**
+     * 安装应用apk, 返回安装成功的设备序列号
+     * @param pacakgeName
+     * @param localApkPath
+     * @return
+     */
+    public static List<String> installApkToAllOnlineDevices(String pacakgeName, String localApkPath){
+        //installSucceedDeviceList.clear();
+        List<String> installedDevices = new ArrayList<String>();
+        logger.info("ready to install apk:"+localApkPath);
+        List<IDevice> onlineDevices = DeviceMonitor.getInstance().getOnlineDevices();
+        logger.info("online device list size:"+onlineDevices.size());
+        for(int i=0;i<onlineDevices.size();i++){
+            IDevice device = onlineDevices.get(i);
+            
+            logger.info("install apk to device:"+device.getName());
+            try {
+                //device.installPackage(localApkPath, true);
+                if(Util.installApk(device, localApkPath, pacakgeName)){
+                    logger.info("install finish");
+                }
+                if(Util.isApkInstalled(device, pacakgeName)){
+                    logger.info("install succeed!");
+                    installedDevices.add(device.getSerialNumber());
+                }else{
+                    logger.info("install failed!");
+                    Util.installApk(device.getSerialNumber(), localApkPath);
+                    if(Util.isApkInstalled(device, pacakgeName)){
+                        logger.info("install succeed!");
+                        installedDevices.add(device.getSerialNumber());
+                    }else{
+                        logger.info("try install again failed!");
+                    }
+                }
+                
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return installedDevices;
+    }
 
     /**
      * 返回文件的内容, 以列表的格式, 每行文本作为列表的一个条目, 空行也作为一个条目
@@ -478,12 +554,103 @@ public class Util {
         }
         return sps;
     }
+    
+    public static void printAllThreadStack(){
+        ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
+        ThreadGroup parent;
+        while ((parent = rootGroup.getParent()) != null) {
+            rootGroup = parent;
+        }
+
+        listThreads(rootGroup, "");
+    }
+    
+ // List all threads and recursively list all subgroup
+    public static void listThreads(ThreadGroup group, String indent) {
+        System.out.println(indent + "Group[" + group.getName() + 
+                ":" + group.getClass()+"]");
+        int nt = group.activeCount();
+        Thread[] threads = new Thread[nt*2 + 10]; //nt is not accurate
+        nt = group.enumerate(threads, false);
+
+        // List every thread in the group
+        for (int i=0; i<nt; i++) {
+            Thread t = threads[i];
+            System.out.println(indent + "  Thread[" + t.getName() 
+                    + ":" + t.getClass() + "]");
+        }
+
+        // Recursively list all subgroups
+        int ng = group.activeGroupCount();
+        ThreadGroup[] groups = new ThreadGroup[ng*2 + 10];
+        ng = group.enumerate(groups, false);
+
+        for (int i=0; i<ng; i++) {
+            listThreads(groups[i], indent + "  ");
+        }
+    }
+    
+    public static String getTempFilePath(String serial){
+        String tempFile = "testreport/"+serial+"";
+        Util.makeDir(tempFile);
+        tempFile = tempFile+"/temp_";
+        return tempFile;
+    }
+    
+    public static String getFileNameFromPath(String remotePath){
+        if(isNull(remotePath)) return "";
+        if(remotePath.lastIndexOf("/")>0){
+            remotePath = remotePath.substring(remotePath.lastIndexOf("/")+1);
+        }
+        if(remotePath.lastIndexOf("\\")>0){
+            remotePath = remotePath.substring(remotePath.lastIndexOf("\\")+1);
+        }
+        return remotePath;
+    }
+    
+    public static boolean getRemoteFileContent(String serial, String remotePath, List<String> ouputFileContent){
+        String tempFile = getTempFilePath(serial);
+        Util.deleteFile(tempFile);
+        
+        tempFile +=getFileNameFromPath(remotePath);
+        
+        Util.getCmdOutput("adb -s " + serial + " pull "+remotePath+" "+ tempFile);
+        if(!Util.isFileExist(tempFile)){
+            return false;
+        }
+        List<String> content = Util.getFileContentLines(tempFile);
+        ouputFileContent.addAll(content);
+        return true;
+    }
+    
+    private static String formateStack(String stack){
+        String formated = "";
+        if(stack==null) return "";
+        if(stack.length()<10) return stack;
+        
+//        java.util.StringTokenizer st = new StringTokenizer(stack, " at ");
+        String[] stacks = stack.split(" at ");
+        for (int i = 0; i < stacks.length; i++) {
+            if(i>0)
+            formated += " at "+stacks[i] + "\r\n";
+            else{
+                formated += stacks[i] + "\r\n";
+            }
+        }
+//        while(stack.indexOf(" at ", 4)!=-1){
+//            formated +=stack.substring(0, stack.indexOf(" at ", 4));
+//            stack = stack.substring(stack.indexOf(" at ", 4));
+//        }
+        
+        return formated;
+    }
+    
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	    String f = formateStack("junit.framework.AssertionFailedError: 在查词结果页面点反馈后没有进入反馈页面,fragment:0 at com.kingsoft.test.Powerword7TestCase.assertTrue2(Powerword7TestCase.java:210) at com.kingsoft.translate.TranslateFragmentTest.sendFeebackText(TranslateFragmentTest.java:1030) at com.kingsoft.translate.TranslateFragmentTest.testTrans007(TranslateFragmentTest.java:178) at java.lang.reflect.Method.invokeNative(Native Method) at android.test.InstrumentationTestCase.runMethod(InstrumentationTestCase.java:214) at android.test.InstrumentationTestCase.runTest(InstrumentationTestCase.java:199) at android.test.ActivityInstrumentationTestCase2.runTest(ActivityInstrumentationTestCase2.java:192) at com.kingsoft.test.Powerword7TestCase.callSuperRunTest(Powerword7TestCase.java:97) at com.kingsoft.test.Powerword7TestCase.access$000(Powerword7TestCase.java:24) at com.kingsoft.test.Powerword7TestCase$1.run(Powerword7TestCase.java:46) ");
+        System.out.println(f);
 	}
 
 }

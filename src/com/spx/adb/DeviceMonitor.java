@@ -135,7 +135,7 @@ public class DeviceMonitor extends Thread {
 		}
 	}
 
-	private void findDevices() {
+	public void findDevices() {
 		List<String> output = Util.getCmdOutput("adb devices");
 		// Log.d(TAG, "output.size:"+output.size());
 		List<Device> devs = new ArrayList<Device>();
