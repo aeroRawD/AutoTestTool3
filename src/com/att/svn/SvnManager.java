@@ -32,7 +32,7 @@ public class SvnManager {
 	        File f=new File(projectPath);
 	        f.mkdirs();
 	        
-	        checkoutProject(SystemEnv.getUrlForLocalpath(projectPath), projectPath, SystemEnv.user, SystemEnv.pwd);
+	        checkoutProject(SystemEnv.getUrlForLocalpath(projectPath), projectPath, SystemEnv.getUser(), SystemEnv.getPassword());
 	    }
 	    
 		List<String> updateContent = update(projectPath);

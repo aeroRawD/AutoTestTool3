@@ -289,6 +289,14 @@ public class Util {
         }
 	}
 	
+	public static void createFile(String distFile, List<String> content){
+	    StringBuilder sb = new StringBuilder();
+        for(String s:content){
+            if(!Util.isNull(s)) sb.append(s+"\r\n");
+        }
+        createFile(distFile, sb.toString());
+	}
+	
 	public static void createFile(String distFile, String content){
 //		try{
 //			PrintWriter pw = new PrintWriter(new File(testProject+"/ant.properties"));
@@ -320,9 +328,26 @@ public class Util {
 		return f.exists();
 	}
 	
+	public static void cleanDirectroy(String path){
+	    Util.deleteFile(path);
+	    Util.makeDir(path);
+	    File f = new File(path);
+	    String[] childs = f.list();
+	    if(childs!=null){
+	        for(String fp: childs){
+	            Util.deleteFile(fp);
+	        }
+	    }
+	}
+	
 	public static boolean deleteFile(String filePath){
 		File f = new File(filePath);
-		return f.delete();
+		int tryTimes = 3;
+		while(f.exists() && tryTimes>0){
+		    if(f.delete()) break;
+		    tryTimes--;
+		}
+		return !f.exists();
 	}
 	
 	/**
@@ -610,9 +635,10 @@ public class Util {
     
     public static boolean getRemoteFileContent(String serial, String remotePath, List<String> ouputFileContent){
         String tempFile = getTempFilePath(serial);
-        Util.deleteFile(tempFile);
+        
         
         tempFile +=getFileNameFromPath(remotePath);
+        Util.deleteFile(tempFile);
         
         Util.getCmdOutput("adb -s " + serial + " pull "+remotePath+" "+ tempFile);
         if(!Util.isFileExist(tempFile)){

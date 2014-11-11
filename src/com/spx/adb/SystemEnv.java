@@ -1,13 +1,39 @@
 package com.spx.adb;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class SystemEnv {
     
     public static final String admin = "shaopengxiang@kingsoft.com";
     
-    public static final String user = "shaopengxiang";
-    public static final String pwd = "hcPoIUIPLf";
+    private static String user = "shaopengxiang";
+    private static String pwd ="spx";
+    static {
+        List<String> fileContentLines = Util
+                .getFileContentLines("local.properties");
+        String username = "shaopengxiang";
+        String password = "spx";
+        for (String line : fileContentLines) {
+            if (line.startsWith("mail.user=")) {
+                username = line.substring("mail.user=".length());
+            }
+            if (line.startsWith("mail.user.password=")) {
+                password = line.substring("mail.user.password=".length());
+            }
+        }
+        pwd = password;
+        user = username;
+    }
+    
+    public static String getPassword(){
+        return pwd;
+    }
+    
+    public static String getUser(){
+        return user;
+    }
+    
 	public static final String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";
 	public static final String lint ="D:/Android/adt-bundle-windows-x86_64-20140702/sdk/tools/lint.bat";
 	

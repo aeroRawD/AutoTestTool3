@@ -78,7 +78,7 @@ public class MailSender {
                 return;
             }
         }
-        sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), true);
+        sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), false);
         notifyDataMap.put(url, System.currentTimeMillis());
     }
 
