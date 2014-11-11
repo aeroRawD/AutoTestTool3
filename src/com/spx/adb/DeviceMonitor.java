@@ -114,7 +114,14 @@ public class DeviceMonitor extends Thread {
 			
 			// printDevices();
 			try {
+			    
+			    if(!isLoopMode()){
+			        Thread.sleep(60000);
+			        continue;
+			    }
+			    
 				findDevices();
+				
 				
 				Thread.sleep(12000);
 			} catch (Exception e) {
@@ -124,6 +131,14 @@ public class DeviceMonitor extends Thread {
 		}
 	}
 
+	private boolean isLoopMode() {
+        String now = Util.getTimeStr("HH:mm");
+        if (now.compareTo(SystemEnv.loopEndTime) < 0 && now.compareTo(SystemEnv.loopStartTime) > 0) {
+            return true;
+        }
+        return false;
+    }
+	
 	private void updateIDevices() {
 
 	}

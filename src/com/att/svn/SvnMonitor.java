@@ -19,8 +19,7 @@ public class SvnMonitor extends Thread {
     private static final int SVN_UPDATE_TIME = 12000;
     private static final int HEART_BEAT_TIME = 60000;
 
-    private String loopStartTime = "09:00";
-    private String loopEndTime = "22:00";
+    
 
     // 被监控的SVN url列表
     private List<String> watchedUrls = new ArrayList<String>();
@@ -49,8 +48,7 @@ public class SvnMonitor extends Thread {
                     Util.sleep(SVN_UPDATE_TIME);
                 } else {
                     logger.info("当前不需要实时监控svn");
-                    if (!DailyRunner.getInstance().isRuning()
-                            && !DailyRunner.getInstance().hasBeenPerfomToday()) {
+                    if (!DailyRunner.getInstance().isRuning() ) {
                         DailyRunner.getInstance().dailyPerfom();
                     }
                     Util.sleep(HEART_BEAT_TIME);
@@ -64,7 +62,7 @@ public class SvnMonitor extends Thread {
 
     private boolean isLoopMode() {
         String now = Util.getTimeStr("HH:mm");
-        if (now.compareTo(loopEndTime) < 0 && now.compareTo(loopStartTime) > 0) {
+        if (now.compareTo(SystemEnv.loopEndTime) < 0 && now.compareTo(SystemEnv.loopStartTime) > 0) {
             return true;
         }
         return false;

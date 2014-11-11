@@ -132,12 +132,13 @@ public class MailSender {
     public void sendMail(List<String> recipients, String subject,
             String textContent, boolean useHtml){
         if(useHtml){
-            StringBuilder html = new StringBuilder();
-            html.append("<html><head><title>This is not usually displayed</title></head>");
-            html.append("<body><div>");
-            html.append(""+textContent);
-            html.append("</div></body></html>");
-            sendMessageWithEmbededImage(recipients, subject, html.toString());
+//            StringBuilder html = new StringBuilder();
+//            html.append("<html><head><title>This is not usually displayed</title></head>");
+//            html.append("<body><div>");
+//            html.append(""+textContent);
+//            html.append("</div></body></html>");
+//            sendMessageWithEmbededImage(recipients, subject, html.toString());
+            sendTxtMail(recipients, subject, textContent);
         }else{
             sendTxtMail(recipients, subject, textContent);
         }

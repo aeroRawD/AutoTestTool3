@@ -9,6 +9,8 @@ public class SystemEnv {
     
     private static String user = "shaopengxiang";
     private static String pwd ="spx";
+    public static String loopStartTime = "09:00";
+    public static String loopEndTime = "15:57";
     static {
         List<String> fileContentLines = Util
                 .getFileContentLines("local.properties");
@@ -21,6 +23,12 @@ public class SystemEnv {
             if (line.startsWith("mail.user.password=")) {
                 password = line.substring("mail.user.password=".length());
             }
+            if (line.startsWith("loop.start.time=")) {
+                loopStartTime = line.substring("loop.start.time=".length());
+            }
+            if (line.startsWith("loop.end.time=")) {
+                loopEndTime = line.substring("loop.end.time=".length());
+            }
         }
         pwd = password;
         user = username;
@@ -32,6 +40,11 @@ public class SystemEnv {
     
     public static String getUser(){
         return user;
+    }
+    
+    
+    static{
+        
     }
     
 	public static final String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";

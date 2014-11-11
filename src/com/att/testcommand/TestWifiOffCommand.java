@@ -21,7 +21,7 @@ public class TestWifiOffCommand implements TestCommand{
     @Override
     public List<String> getAfterCommands(String serial) {
         List<String> cmds = new ArrayList<String>();
-        cmds.add("adb -s "+ serial+" pull /sdcard/powerword/testinfo.xml ./testreport/"+serial+"/testinfo_wifi.xml");
+        cmds.add("adb -s "+ serial+" pull /sdcard/powerword/testinfo.xml ./testreport/"+serial+"/testinfo_nowifi.xml");
         
         cmds.add("adb -s "+ serial+" pull /sdcard/powerword/tests_list.txt ./testreport/"+serial+"/wifioff_1_tests_list.txt");
         cmds.add("adb -s "+ serial+" shell rm /sdcard/powerword/tests_list.txt");
