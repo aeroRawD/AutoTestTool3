@@ -20,8 +20,28 @@ public class TestInfo {
     private int apkSize;
     private int lintWaringCount;
     private int findbugsWaringCount;
+    private String coverage;
+    private String phoneMemSize;
+    private int maxHeapAlloc = 0;
     
-    
+    public int getMaxHeapAlloc() {
+        return maxHeapAlloc;
+    }
+    public void setMaxHeapAlloc(int maxHeapAlloc) {
+        this.maxHeapAlloc = maxHeapAlloc;
+    }
+    public String getPhoneMemSize() {
+        return phoneMemSize;
+    }
+    public void setPhoneMemSize(String phoneMemSize) {
+        this.phoneMemSize = phoneMemSize;
+    }
+    public String getCoverage() {
+        return coverage;
+    }
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
     public int getUseCaseCount() {
         return useCaseCount;
     }

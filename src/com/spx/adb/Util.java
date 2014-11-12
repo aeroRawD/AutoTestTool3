@@ -112,13 +112,19 @@ public class Util {
 		
 	}
 	
+	public static List<String> getCmdOutput(String cmds, boolean silent){
+	    java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
+        String[] cmdArray = cmds.split(" ");
+        return getCmdOutput(cmdArray, silent);
+	}
+	
 	public static List<String> getCmdOutput(String cmds){
 		java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
 		String[] cmdArray = cmds.split(" ");
-		return getCmdOutput(cmdArray);
+		return getCmdOutput(cmdArray, false);
 	}
 	
-	public static List<String> getCmdOutput(String[] cmds){
+	public static List<String> getCmdOutput(String[] cmds, boolean silent){
 		List<String> ret = new ArrayList<String>();
 		Process process = null;
 		InputStream is = null;
@@ -134,9 +140,17 @@ public class Util {
 			dis = new BufferedReader(new InputStreamReader(is, "gbk"));
 			while ((line = dis.readLine()) != null) {
 				//Log.d("Log","输出:"+line);
-				logger.info(line);
+			    if(line.contains("KB/s") || line.contains("BT INFO: 2.2")|| Util.isNull(line)){
+			        
+			    }else {
+			        if(!silent)
+			            logger.info(line);
+			        
+			        ret.add(line+"\r\n");
+			    }
+				
 				//sb.append(line+"\r\n");
-				ret.add(line+"\r\n");
+				
 			}
 			
 			edis= new BufferedReader(new InputStreamReader(eis, "gbk"));
@@ -329,15 +343,25 @@ public class Util {
 	}
 	
 	public static void cleanDirectroy(String path){
-	    Util.deleteFile(path);
-	    Util.makeDir(path);
+	    try{
+	        Util.deleteFile(path);
+	        Util.makeDir(path);
+	    }catch(Exception ex){ex.printStackTrace();}
+	    
 	    File f = new File(path);
-	    String[] childs = f.list();
-	    if(childs!=null){
-	        for(String fp: childs){
-	            Util.deleteFile(fp);
+	    if(Util.isFileExist(path)){
+	        String[] childs = f.list();
+	        if(childs!=null){
+	            for(String fp: childs){
+	                try{
+	                    Util.deleteFile(path+"/"+fp);
+	                }catch(Exception exx){
+	                    exx.printStackTrace();
+	                };
+	            }
 	        }
 	    }
+	    
 	}
 	
 	public static boolean deleteFile(String filePath){

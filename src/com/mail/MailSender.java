@@ -175,7 +175,7 @@ public class MailSender {
            message.setContent(htmlMailContent,
                               "text/html; charset=\"UTF-8\"" );
 
-           if(attachedFile!=null){
+           if(attachedFile!=null && attachedFile.size()>0){
                MimeMultipart content = new MimeMultipart("related");
                // Image part
                MimeBodyPart filePart = new MimeBodyPart();
