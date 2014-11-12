@@ -67,6 +67,7 @@ public class MailSender {
     }
     
     private HashMap<String, Long> notifyDataMap = new HashMap<String, Long>();
+    
     /**
      * 发送编译不过的邮件提醒
      */
@@ -81,6 +82,7 @@ public class MailSender {
         sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), false);
         notifyDataMap.put(url, System.currentTimeMillis());
     }
+   
 
     public void sendTxtMail(List<String> recipients, String subject,
             String mailContent) {
@@ -144,8 +146,8 @@ public class MailSender {
         }
     }
     
-    private void sendHtmlMail(List<String> recipients, String subject,
-            String htmlMailContent){
+    public void sendHtmlMail(List<String> recipients, String subject,
+            String htmlMailContent, List<String> attachedFile){
         logger.info("will send html mail...");
 
         Session session = Session.getInstance(properties, authenticator);
@@ -154,7 +156,8 @@ public class MailSender {
             
             
            // Create a default MimeMessage object.
-           MimeMessage message = new MimeMessage(session);
+           //MimeMessage message = new MimeMessage(session);
+           SMTPMessage message = new SMTPMessage(session);
 
            // Set From: header field of the header.
            message.setFrom(new InternetAddress(from));
@@ -172,11 +175,27 @@ public class MailSender {
            message.setContent(htmlMailContent,
                               "text/html; charset=\"UTF-8\"" );
 
+           if(attachedFile!=null){
+               MimeMultipart content = new MimeMultipart("related");
+               // Image part
+               MimeBodyPart filePart = new MimeBodyPart();
+               for(String fs:attachedFile){
+                   filePart.attachFile(fs);
+               }
+               MimeBodyPart textPart = new MimeBodyPart();
+               textPart.setText(htmlMailContent, 
+                 "UTF-8", "html");
+               content.addBodyPart(textPart);
+               content.addBodyPart(filePart);
+               message.setContent(content);
+           }
+          
            // Send message
            Transport.send(message);
            System.out.println("Sent html message successfully....");
-        }catch (MessagingException mex) {
+        }catch (Exception mex) {
            mex.printStackTrace();
+           System.out.println("Sent html message failed...."+mex.getMessage());
         }
     }
     

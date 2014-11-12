@@ -41,6 +41,13 @@ public class SvnMonitor extends Thread {
             try {
 
                 if (isLoopMode()) {
+                    
+                    //即使是在loop模式, 如果用例那边还没跑完, 也先等待.
+                    if (DailyRunner.getInstance().isRuning() ) {
+                        logger.info("用例正在执行,暂不监控svn");
+                        Util.sleep(HEART_BEAT_TIME);
+                        continue;
+                    }
                     if (!isInBuilding()) {
                         checkSvnUpdate();
                     }

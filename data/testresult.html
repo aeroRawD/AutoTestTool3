@@ -1,0 +1,122 @@
+﻿<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+
+BODY, TABLE, TD, TH, P {
+font-family:Verdana,Helvetica,sans serif;
+font-size:11px;
+color:black;
+}
+h1 { color:0ac7e6; }
+h2 { color:0ac7e6; }
+h3 { color:#028dc1; background-color:#ffffff;}
+
+TD.bg1 { color:#028dc1; background-color:#ffffff; font-size:120% }
+TH.THBG { color:white; background-color:#0ac7e6; font-size:110%;}
+TH.wb { color:white; background-color:#0ac7e6; font-size:110%; border: 1px solid black; border-collapse: collapse;}
+TD.wb { border: 1px solid black; border-collapse: collapse; color:black; }
+TD.PA { border: 1px solid black; border-collapse: collapse; color:green; }
+table.wb { width:100%; border: 1px solid black; border-collapse: collapse; }
+TD.bg2 { color:white; background-color:#0ac7e6; font-size:110% }
+TD.bg3 { color:white; background-color:#8080FF; }
+TD.test_passed { color:blue; }
+TD.test_failed { color:red; }
+TD.console { font-family:Courier New; }
+
+
+th, td {
+    text-align: left;
+	padding-right:0px;
+}
+
+td.rp {
+	padding-right:50px;
+	color:#0ac7e6; background-color:#ffffff;
+}
+
+table {
+	cellpadding:10; 
+}
+
+</style>
+</head>
+
+<body>
+
+<table>
+<TR><TD colspan="2" class="bg1"><B>测试基本信息</B></TD></TR>
+<TR>
+	<TD>测试时间:</TD><TD class="rp">{testing_time}</TD>
+	<TD>运行时长:</TD><TD class="rp">{testing_duration}</TD>
+	<TD>用例覆盖率:</TD><TD class="rp">{testing_coverage}%</TD>
+</TR>
+<TR>
+	<TD>失败用例/总用例:</TD><TD class="rp"><span style="color:red">{usecase_fail}</span>/{usecase_all}</TD>
+	<TD>Wifi环境下用例数:</TD><TD class="rp">{usecase_wifi_count}</TD>
+	<TD>无网络环境下用例数:</TD><TD class="rp">{usecase_nowifi_count}</TD>
+</TR>
+<TR>
+	<TD>手机名称:</TD><TD class="rp">{phone_name}</TD>
+	<TD>Android系统版本:</TD><TD class="rp">{androidos_build}</TD>
+	<TD>手机分辨率:</TD><TD class="rp">{phone_resolution}</TD>
+	<TD>手机内存:</TD><TD class="rp">{MemTotal}</TD>
+</TR>
+<TR>
+	<TD>代码行数:</TD><TD class="rp">{code_lines}</TD>
+	<TD>APK大小:</TD><TD class="rp">{apk_size}</TD>
+	<TD>Lint告警:</TD><TD class="rp">{lint_warnings}</TD>
+	<TD>findbugs告警:</TD><TD class="rp">{startuptime}</TD>
+</TR>
+</table>
+
+<br>
+<br>
+<br>
+<h3><span style="color:red">失败用例列表</span>:</h3>
+<div name="fail_case">
+<table class="wb">
+  <tr>
+    <th class="wb">First Name</th>
+    <th class="wb">Last Name</th>		
+    <th class="wb">Points</th>
+  </tr>
+  <tr>
+    <td  class="wb">Jill</td>
+    <td  class="wb">Smith</td>		
+    <td  class="wb">50</td>
+  </tr>
+</table>
+</div>
+
+<BR/>
+<div name="pass_case">
+<TABLE class="wb" >
+<tr>
+<th class="wb">ID</th>
+<th class="wb">用例标题</th>
+<th class="wb">代码方法</th>
+<th class="wb"></th>
+<th class="wb">wifi</th>
+<th class="wb">负责人</th>
+</tr>
+<tr>
+<td class="PA">CIBA-ST-VOA_023</td>
+<td class="PA">voa内容页之缓存</td>
+<td class="PA">com.kingsoft.fragment.VoaTest.testnoNetArticleNotPlay</td>
+<td class="PA" ><span style="color:GREEN">PASS</span></td>
+<td class="PA">off</td>
+<td class="PA">guoqin</td>
+</tr>
+</TABLE>
+</div>
+
+<BR/>
+<TABLE width="100%">
+<TR><TD colspan="2" class="bg1"><B>Monkey测试结果</B></TD></TR>
+<TR><TD colspan="2" class="bg2">暂无</TD></TR>
+</TABLE>
+
+</body>
+</html>

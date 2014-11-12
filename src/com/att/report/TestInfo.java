@@ -1,5 +1,8 @@
 package com.att.report;
 
+import java.util.Iterator;
+import java.util.Set;
+
 public class TestInfo {
     private int useCaseCount;
     private int useCaseFailCount;
@@ -102,6 +105,29 @@ public class TestInfo {
     }
     public void setFindbugsWaringCount(int findbugsWaringCount) {
         this.findbugsWaringCount = findbugsWaringCount;
+    }
+    
+//    public String replaceTags(String html, String tag , String value) {
+//        Set<String> keys = data.keySet();
+//        Iterator<String> keyIt = keys.iterator();
+//        while(keyIt.hasNext()){
+//            String key=keyIt.next();
+//            html = html.replace("{" + key + "}",getValue(key));
+//        }
+//        return html;
+//    }
+    public String replaceTags(String html) {
+        html = html.replace("{testing_time}",this.getTestStartTime());
+        html = html.replace("{testing_duration}",this.getTestduration());
+        html = html.replace("{testing_coverage}","31.2%");
+        html = html.replace("{usecase_fail}",this.getUseCaseFailCount()+"");
+        html = html.replace("{usecase_all}",this.getUseCaseCount()+"");
+        html = html.replace("{usecase_wifi_count}",this.getWifiUseCaseCount()+"");
+        html = html.replace("{usecase_nowifi_count}",(getUseCaseCount()-getWifiUseCaseCount())+"");
+        html = html.replace("{phone_name}",this.getPhoneName());
+        html = html.replace("{androidos_build}",this.getAndroidOsBuild());
+        //html = html.replace("{androidos_build}",this.getAndroidOsBuild());
+        return html;
     }
     
     
