@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TestWifiOffCommand implements TestCommand{
+public class TestWifiOffCommand extends TestCommandAdapter{
 
    public List<String> getBeforeCommands(String serial){
        List<String> cmds = new ArrayList<String>();

@@ -3,7 +3,8 @@ package com.att.testcommand;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestWifiOnRetryCommand implements TestCommand{
+public class TestWifiOnRetryCommand extends TestCommandAdapter{
+    
     public List<String> getBeforeCommands(String serial){
         List<String> cmds = new ArrayList<String>();
         cmds.add("adb -s "+ serial+" shell am broadcast -a kingsoft.test.cmd.action.closewifi");

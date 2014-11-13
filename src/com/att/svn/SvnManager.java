@@ -77,7 +77,11 @@ public class SvnManager {
 	}
 
 	public List<String> update(String localPath) {
-		List<String> cmdOutput = Util.getCmdOutput("svn update " + localPath);
+	    List<String> cmdOutput = Util.getCmdOutput("svn cleanup " + localPath);
+	    for (String s : cmdOutput)
+            logger.info("" + s.trim());
+	    
+		cmdOutput = Util.getCmdOutput("svn update " + localPath);
 		for (String s : cmdOutput)
 			logger.info("" + s.trim());
 

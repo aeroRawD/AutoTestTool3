@@ -3,7 +3,7 @@ package com.att.testcommand;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestWifiOnCommand implements TestCommand{
+public class TestWifiOnCommand extends TestCommandAdapter{
 
     @Override
     public List<String> getBeforeCommands(String serial) {

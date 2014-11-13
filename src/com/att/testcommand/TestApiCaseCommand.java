@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TestApiCaseCommand implements TestCommand{
+public class TestApiCaseCommand extends TestCommandAdapter{
 
     @Override
     public List<String> getBeforeCommands(String serial) {
