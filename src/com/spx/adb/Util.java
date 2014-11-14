@@ -483,6 +483,12 @@ public class Util {
         return sdf.format(now);
     }
 	
+	public static String getTimeStr(String format, long time) {
+        Date now = new Date(time);
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(format);
+        return sdf.format(now);
+    }
+	
 	/**
      * get file content into a string, only for little file
      * 

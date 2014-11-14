@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.att.build.ApplicationBuilder;
-import com.att.build.DailyRunner;
+import com.att.build.DailyRunner2;
 import com.log.Log;
 import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
@@ -43,7 +43,7 @@ public class SvnMonitor extends Thread {
                 if (isLoopMode()) {
                     
                     //即使是在loop模式, 如果用例那边还没跑完, 也先等待.
-                    if (DailyRunner.getInstance().isRuning() ) {
+                    if (DailyRunner2.getInstance().isRuning() ) {
                         logger.info("用例正在执行,暂不监控svn");
                         Util.sleep(HEART_BEAT_TIME);
                         continue;
@@ -55,8 +55,8 @@ public class SvnMonitor extends Thread {
                     Util.sleep(SVN_UPDATE_TIME);
                 } else {
                     logger.info("当前不需要实时监控svn");
-                    if (!DailyRunner.getInstance().isRuning() ) {
-                        DailyRunner.getInstance().dailyPerfom();
+                    if (!DailyRunner2.getInstance().isRuning() ) {
+                        DailyRunner2.getInstance().dailyPerfom();
                     }
                     Util.sleep(HEART_BEAT_TIME);
                 }

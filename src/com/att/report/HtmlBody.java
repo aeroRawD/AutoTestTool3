@@ -3,6 +3,8 @@ package com.att.report;
 
 import java.util.List;
 
+import com.spx.adb.Util;
+
 public class HtmlBody {
     String result = "";
     String bodyCode;
@@ -116,7 +118,11 @@ public class HtmlBody {
             sb.append("<td class=\"wb\">" + uc.getAttr("title") + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("classname") + "."
                     + uc.getAttr("name") + "</td>\r\n");
-            sb.append("<td class=\"wb\">" + uc.getAttr("error") + "</td>\r\n");
+            String error = uc.getAttr("error");
+            if(Util.isNull(error) || "NULL".equalsIgnoreCase(error)|| "no error".equalsIgnoreCase(error)){
+                error = uc.getError();
+            }
+            sb.append("<td class=\"wb\">" + error + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("wifi") + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("author") + "</td>\r\n");
             sb.append("</tr>\r\n");
