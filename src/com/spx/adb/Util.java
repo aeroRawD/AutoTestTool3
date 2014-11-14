@@ -37,10 +37,10 @@ public class Util {
 	    int tryTimes = 3;
 	    while(tryTimes>0){
 	        try {
-	            logger.fine("cmd:"+cmd);
+	            //logger.info("cmd:"+cmd);
 	            device.executeShellCommand(cmd, receiver, timeout,
 	                    TimeUnit.MILLISECONDS);
-	            //Log.d("cmd finished, time:"+(new Date()));
+	            System.out.println("cmd finished, time:"+(new Date()));
 	            return ;
 	        } catch (Exception e) {
 	            e.printStackTrace();

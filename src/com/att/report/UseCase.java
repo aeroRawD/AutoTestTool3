@@ -27,6 +27,14 @@ public class UseCase {
             pass = false;
         }
     }
+    
+    public boolean isWifiRequired(){
+        String wifiAttr =getAttr("wifi");
+        if("on".equals(wifiAttr) || "both".equals(wifiAttr)){
+            return true;
+        }
+        return false;
+    }
 
     public boolean isPassed() {
         return pass;
@@ -34,5 +42,27 @@ public class UseCase {
 
     public String getAttr(String attrName) {
         return attributes.get(attrName);
+    }
+    
+    private String error = "";
+    private String stack = "";
+    public String getStack() {
+        return stack;
+    }
+
+    public void setStack(String stack) {
+        this.stack = stack;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error){
+        this.error = error;
+    }
+    
+    public void setPassed(boolean ps){
+        pass = ps;
     }
 }
