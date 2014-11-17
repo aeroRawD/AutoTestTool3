@@ -21,6 +21,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.att.report.MailContentBuilder;
 import com.log.Log;
 import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
@@ -146,9 +147,11 @@ public class MailSender {
         }
     }
     
+    
+    public static final String INLINE_PNG_ID1="inlinePngFile1";
     public void sendHtmlMail(List<String> recipients, String subject,
-            String htmlMailContent, List<String> attachedFile){
-        logger.info("will send html mail...");
+            String htmlMailContent, List<String> attachedFile, String inlinePngFile1){
+        logger.info("will send html mail...inlinePngFile1:"+inlinePngFile1);
 
         Session session = Session.getInstance(properties, authenticator);
 
@@ -170,10 +173,24 @@ public class MailSender {
            // Set Subject: header field
            message.setSubject(subject);
            
+           //System.out.println("old:"+htmlMailContent);
+           
+           // ContentID is used by both parts
+           String cid = ContentIdGenerator.getContentId();
+           String beginTag="<embeded1>";
+           String endTag ="</embeded1>";
+           String embedImg="<img src=\"cid:"+ cid + "\" />";
+           htmlMailContent = MailContentBuilder.replaceHtmlPart(htmlMailContent, beginTag, endTag, embedImg);
+           
+           
+           
+           Util.makeDir("data/backup/mail");
+           Util.createFile("data/backup/mail/"+System.currentTimeMillis()+".html", htmlMailContent);
+           //System.out.println("new:"+htmlMailContent);
 
            // Send the actual HTML message, as big as you like
-           message.setContent(htmlMailContent,
-                              "text/html; charset=\"UTF-8\"" );
+//           message.setContent(htmlMailContent,
+//                              "text/html; charset=\"UTF-8\"" );
 
            if(attachedFile!=null && attachedFile.size()>0){
                MimeMultipart content = new MimeMultipart("related");
@@ -186,9 +203,24 @@ public class MailSender {
                textPart.setText(htmlMailContent, 
                  "UTF-8", "html");
                content.addBodyPart(textPart);
+               
+               
+               if(!Util.isNull(inlinePngFile1)){
+                   MimeBodyPart imagePart = new MimeBodyPart();
+                   //imagePart.attachFile("data/img/2008edd8f316/bar_2014-11-17_141117.png");
+                   imagePart.attachFile(inlinePngFile1);
+                   //imagePart.attachFile("data/myimg.gif");
+                   imagePart.setContentID("<"+cid+">");
+                   imagePart.setDisposition(MimeBodyPart.INLINE);
+                   content.addBodyPart(imagePart);
+               }
+               
                content.addBodyPart(filePart);
+               
                message.setContent(content);
            }
+           
+          
           
            // Send message
            Transport.send(message);

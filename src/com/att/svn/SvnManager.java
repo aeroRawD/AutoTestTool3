@@ -53,7 +53,7 @@ public class SvnManager {
 	}
 	
 	public SvnRevisionInfo getSvnRevisionDetail(String projectPath, String revId){
-		List<String> cmdOutput = Util.getCmdOutput("svn log --verbose -r " + revId +" "+projectPath);
+		List<String> cmdOutput = Util.getCmdOutput("svn log --verbose -r " + revId +" "+projectPath, "GBK");
 		logger.info("svn log size:" + cmdOutput.size());
 		
 		SvnRevisionInfo revisionInfo = new SvnRevisionInfo(cmdOutput);
@@ -61,7 +61,7 @@ public class SvnManager {
 	}
 
 	public SvnInfo getCurrentSvnInfo(String projectPath) {
-		List<String> cmdOutput = Util.getCmdOutput("svn info " + projectPath);
+		List<String> cmdOutput = Util.getCmdOutput("svn info " + projectPath, "GBK");
 		SvnInfo svnInfo = SvnInfo.getSvnInfo(cmdOutput);
 		return svnInfo;
 	}
@@ -69,23 +69,23 @@ public class SvnManager {
 	public void checkoutProject(String url, String localPath, String user,
 			String pwd) {
 		List<String> cmdOutput = Util.getCmdOutput("svn checkout " + url + " "
-				+ localPath + " --username " + user + " --password " + pwd);
+				+ localPath + " --username " + user + " --password " + pwd , "GBK");
 		for (String s : cmdOutput)
 			logger.info("" + s);
 		
-		Util.getCmdOutput("svn cleanup "+localPath);
+		Util.getCmdOutput("svn cleanup "+localPath, "GBK");
 	}
 
 	public List<String> update(String localPath) {
-	    List<String> cmdOutput = Util.getCmdOutput("svn cleanup " + localPath);
+	    List<String> cmdOutput = Util.getCmdOutput("svn cleanup " + localPath, "GBK");
 	    for (String s : cmdOutput)
             logger.info("" + s.trim());
 	    
-		cmdOutput = Util.getCmdOutput("svn update " + localPath);
+		cmdOutput = Util.getCmdOutput("svn update " + localPath, "GBK");
 		for (String s : cmdOutput)
 			logger.info("" + s.trim());
 
-		Util.getCmdOutput("svn cleanup "+localPath);
+		Util.getCmdOutput("svn cleanup "+localPath, "GBK");
 		
 		return cmdOutput;
 	}

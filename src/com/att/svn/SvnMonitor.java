@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.android.ddmlib.AndroidDebugBridge;
 import com.att.build.ApplicationBuilder;
+import com.att.build.BackupManager;
 import com.att.build.DailyRunner2;
 import com.log.Log;
 import com.spx.adb.SystemEnv;
@@ -102,12 +103,23 @@ public class SvnMonitor extends Thread {
             SvnRevisionInfo revisionInfo = svnManager.getSvnRevisionDetail(
                     localProjectPath, svnInfo.getLastChangedRevId());
             logger.info("revision info:" + revisionInfo.getRevisionDetail());
+            
+            String revision = revisionInfo.getRevId();
+            if(!isLastestLintFileCreate(revision)){
+                Util.copyFile("testreport/testresult_lint.txt", BackupManager.getDailyRevisionBackupPath(revision)+"/lint.txt");
+            }
 
             String url = SystemEnv.getUrlForLocalpath(localProjectPath);
             notifySvnListeners(url, revisionInfo, localProjectPath);
         }
 
     }
+    
+    public static boolean isLastestLintFileCreate(String revision){
+        String fileName = BackupManager.getDailyRevisionBackupPath(revision)+"/lint.txt";
+        return Util.isFileExist(fileName);
+     }
+    
 
     private void notifySvnListeners(String url, SvnRevisionInfo revisionInfo,
             String localpath) {

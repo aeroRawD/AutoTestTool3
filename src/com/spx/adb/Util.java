@@ -111,20 +111,25 @@ public class Util {
 	public static void runOsCmd() {
 		
 	}
-	
 	public static List<String> getCmdOutput(String cmds, boolean silent){
+        return getCmdOutput(cmds, silent, "utf-8");
+    }
+	public static List<String> getCmdOutput(String cmds, boolean silent, String encode){
 	    java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
         String[] cmdArray = cmds.split(" ");
-        return getCmdOutput(cmdArray, silent);
+        return getCmdOutput(cmdArray, silent, encode);
 	}
 	
-	public static List<String> getCmdOutput(String cmds){
+	public static List<String> getCmdOutput(String cmds, String encode){
 		java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
 		String[] cmdArray = cmds.split(" ");
-		return getCmdOutput(cmdArray, false);
+		return getCmdOutput(cmdArray, false, encode);
 	}
+	public static List<String> getCmdOutput(String cmds){
+        return getCmdOutput(cmds, false, "UTF-8");
+    }
 	
-	public static List<String> getCmdOutput(String[] cmds, boolean silent){
+	public static List<String> getCmdOutput(String[] cmds, boolean silent, String encode){
 		List<String> ret = new ArrayList<String>();
 		Process process = null;
 		InputStream is = null;
@@ -133,11 +138,13 @@ public class Util {
 		BufferedReader edis = null;
 		String line = "";
 		Runtime runtime = Runtime.getRuntime();
+		if(encode==null) encode ="UTF-8";
 		try {
 			process = runtime.exec(cmds);
 			is = process.getInputStream();
 			eis = process.getErrorStream();
-			dis = new BufferedReader(new InputStreamReader(is, "gbk"));
+			
+			dis = new BufferedReader(new InputStreamReader(is, encode));
 			while ((line = dis.readLine()) != null) {
 				//Log.d("Log","输出:"+line);
 			    if(line.contains("KB/s") || line.contains("BT INFO: 2.2")|| Util.isNull(line)){
@@ -153,7 +160,7 @@ public class Util {
 				
 			}
 			
-			edis= new BufferedReader(new InputStreamReader(eis, "gbk"));
+			edis= new BufferedReader(new InputStreamReader(eis, encode));
 			while ((line = edis.readLine()) != null) {
 				//Log.d("Log","Log.Bestpay:"+line);	
 				//sb.append(line+"\r\n");

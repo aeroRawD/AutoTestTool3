@@ -177,7 +177,7 @@ public class Builder {
     public boolean buildTestProject(String buildType, int tryTimes, StringBuilder buildError) {
 
         String cmd = SystemEnv.ant + " -f " + SystemEnv.TESTAPP_PROJECT_PATH
-                + "/build.xml clean " + buildType;
+                + "/build.xml " + buildType;
         Log.d("cmd:" + cmd);
         return buildProject(cmd, SystemEnv.TESTAPP_PROJECT_PATH, tryTimes, buildError);
     }

@@ -3,6 +3,8 @@ package com.att.report;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.att.build.DailyLintChecker;
+
 public class TestInfo {
     private int useCaseCount;
     private int useCaseFailCount;
@@ -146,6 +148,7 @@ public class TestInfo {
         html = html.replace("{usecase_nowifi_count}",(getUseCaseCount()-getWifiUseCaseCount())+"");
         html = html.replace("{phone_name}",this.getPhoneName());
         html = html.replace("{androidos_build}",this.getAndroidOsBuild());
+        html = html.replace("{lint_warnings}",DailyLintChecker.getCurrentRevWarnings());
         //html = html.replace("{androidos_build}",this.getAndroidOsBuild());
         return html;
     }

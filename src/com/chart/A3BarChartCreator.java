@@ -177,6 +177,15 @@ public class A3BarChartCreator {
         return dataset;
     }
     
+    public static CategoryDataset createDoubleBarDataset(double[][] data, String[] titles_Y) {
+        //double[][] data = new double[][] { { 25, 24, 40, 12, 33, 33 } ,{ 25, 24, 40, 12, 33, 33 } };
+        String[] rowKeys = { "total","fail" };
+        //String[] columnKeys = { "张三", "李四", "王五", "马六", "陈七", "赵八" };
+        CategoryDataset dataset = DatasetUtilities.createCategoryDataset(
+                rowKeys, titles_Y, data);
+        return dataset;
+    }
+    
     // 创建CategoryDataset对象
     public static CategoryDataset createDataset2() {
 //        double[][] data = new double[][] { { 25, 24, 40, 12, 33, 33 }  };

@@ -56,7 +56,7 @@ public class MailContentBuilder {
             return null;
 
         int startIndex = html.indexOf(beginTag);
-        int endIndex = html.indexOf(endTag) + endTag.length();
+        int endIndex = html.indexOf(endTag, startIndex) + endTag.length();
         return html.substring(0, startIndex) + newText
                 + html.substring(endIndex);
     }

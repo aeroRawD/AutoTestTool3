@@ -44,6 +44,7 @@ public class HtmlBody {
         beginTag="<div name=\"pass_case\">";
         endTag ="</div>";
         result = MailContentBuilder.replaceHtmlPart(result, beginTag, endTag, getPassedTableContent());
+        
     }
 
     private String getPassedTableContent() {
