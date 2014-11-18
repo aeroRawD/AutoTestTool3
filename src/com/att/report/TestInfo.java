@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.att.build.DailyLintChecker;
+import com.spx.adb.SystemEnv;
 
 public class TestInfo {
     private int useCaseCount;
@@ -25,6 +26,11 @@ public class TestInfo {
     private String coverage;
     private String phoneMemSize;
     private int maxHeapAlloc = 0;
+    private String serial;
+    
+    public TestInfo(String s){
+        serial = s;
+    }
     
     public int getMaxHeapAlloc() {
         return maxHeapAlloc;
@@ -38,12 +44,12 @@ public class TestInfo {
     public void setPhoneMemSize(String phoneMemSize) {
         this.phoneMemSize = phoneMemSize;
     }
-    public String getCoverage() {
-        return coverage;
-    }
-    public void setCoverage(String coverage) {
-        this.coverage = coverage;
-    }
+//    public String getCoverage() {
+//        return coverage;
+//    }
+//    public void setCoverage(String coverage) {
+//        this.coverage = coverage;
+//    }
     public int getUseCaseCount() {
         return useCaseCount;
     }
@@ -138,17 +144,28 @@ public class TestInfo {
 //        }
 //        return html;
 //    }
+    
+    public String getCoverage(){
+        int total = 500;//这个是手工用例的数量
+        int cases =getUseCaseCount();
+        return ""+(cases*100/total);
+    }
+    
     public String replaceTags(String html) {
         html = html.replace("{testing_time}",this.getTestStartTime());
         html = html.replace("{testing_duration}",this.getTestduration());
-        html = html.replace("{testing_coverage}","31.2%");
+        html = html.replace("{testing_coverage}",getCoverage());
         html = html.replace("{usecase_fail}",this.getUseCaseFailCount()+"");
         html = html.replace("{usecase_all}",this.getUseCaseCount()+"");
         html = html.replace("{usecase_wifi_count}",this.getWifiUseCaseCount()+"");
         html = html.replace("{usecase_nowifi_count}",(getUseCaseCount()-getWifiUseCaseCount())+"");
         html = html.replace("{phone_name}",this.getPhoneName());
         html = html.replace("{androidos_build}",this.getAndroidOsBuild());
-        html = html.replace("{lint_warnings}",DailyLintChecker.getCurrentRevWarnings());
+        html = html.replace("{lint_warnings}",DailyLintChecker.getCurrentRevWarnings(SystemEnv.APP_PROJECT_PATH));
+        html = html.replace("{cpu_name}",this.getPhoneCpu());
+        
+        DeviceMemInfo dmi = new DeviceMemInfo("testreport/"+serial+"/meminfo.txt");
+        html = html.replace("{MemTotal}",dmi.getTotalMem());
         //html = html.replace("{androidos_build}",this.getAndroidOsBuild());
         return html;
     }

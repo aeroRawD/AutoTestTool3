@@ -115,6 +115,7 @@ public class Util {
         return getCmdOutput(cmds, silent, "utf-8");
     }
 	public static List<String> getCmdOutput(String cmds, boolean silent, String encode){
+	    //cmds = "cmd /C start /wait "+cmds;
 	    java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
         String[] cmdArray = cmds.split(" ");
         return getCmdOutput(cmdArray, silent, encode);
@@ -140,13 +141,23 @@ public class Util {
 		Runtime runtime = Runtime.getRuntime();
 		if(encode==null) encode ="UTF-8";
 		try {
+		    //System.out.println("1111111111");
 			process = runtime.exec(cmds);
+			//int wait = process.waitFor();
+			//System.out.println("2222 wait:"+wait);
 			is = process.getInputStream();
 			eis = process.getErrorStream();
-			
+			//System.out.println("33333");
 			dis = new BufferedReader(new InputStreamReader(is, encode));
+//			InputStreamReader isr = new InputStreamReader(is);
+			//System.out.println("44444");
+//			line = isr.re
+//			System.out.println("line 1 :"+line);   
 			while ((line = dis.readLine()) != null) {
+			    
+			    //System.out.println("line:"+line);
 				//Log.d("Log","输出:"+line);
+			    //logger.info(line);
 			    if(line.contains("KB/s") || line.contains("BT INFO: 2.2")|| Util.isNull(line)){
 			        
 			    }else {
@@ -157,9 +168,8 @@ public class Util {
 			    }
 				
 				//sb.append(line+"\r\n");
-				
 			}
-			
+			//System.out.println("read error");
 			edis= new BufferedReader(new InputStreamReader(eis, encode));
 			while ((line = edis.readLine()) != null) {
 				//Log.d("Log","Log.Bestpay:"+line);	
@@ -167,7 +177,7 @@ public class Util {
 				logger.severe(line);
 				ret.add(line+"\r\n");
 			}
-		} catch (IOException ie) {
+		} catch (Exception ie) {
 			ie.printStackTrace();
 		} finally {
 			try {
@@ -590,13 +600,21 @@ public class Util {
         File file = new File(fileName);
         return getFileContentLines(file);
     }
-
+    public static List<String> getFileContentLines(String fileName, String encode) {
+        File file = new File(fileName);
+        return getFileContentLines(file,encode);
+    }
+    
     public static List<String> getFileContentLines(File file) {
+        return getFileContentLines(file, "UTF-8");
+    }
+
+    public static List<String> getFileContentLines(File file, String encode) {
         List<String> lines = new ArrayList<String>();
         try {
             // BufferedReader br = new BufferedReader(new FileReader(file));
             BufferedReader br = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(file), "UTF-8"));
+                    new FileInputStream(file), encode));
             String line = null;
             while ((line = br.readLine()) != null) {
                 lines.add(line);

@@ -10,7 +10,7 @@ public class SystemEnv {
     private static String user = "shaopengxiang";
     private static String pwd ="spx";
     public static String loopStartTime = "09:00";
-    public static String loopEndTime = "15:57";
+    public static String loopEndTime = "19:57";
     static {
         List<String> fileContentLines = Util
                 .getFileContentLines("local.properties");
@@ -77,5 +77,13 @@ public class SystemEnv {
 	
 	public static String getLocalPathForUrl(String url){
 		return urlMap.get(url);
+	}
+	
+	public static HashMap<String, String> userMap = new HashMap<String, String>();
+	static {
+	    userMap.put("shaopx", "shaopengxiang@kingsoft.com");
+	    userMap.put("guoqin", "GuoQin@kingsoft.com");
+	    userMap.put("shaopx", "GaoXiang1@kingsoft.com");
+	    userMap.put("taohx", "TAOHONGXIA@kingsoft.com");
 	}
 }

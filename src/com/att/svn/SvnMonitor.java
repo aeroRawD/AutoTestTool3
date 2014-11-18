@@ -105,8 +105,8 @@ public class SvnMonitor extends Thread {
             logger.info("revision info:" + revisionInfo.getRevisionDetail());
             
             String revision = revisionInfo.getRevId();
-            if(!isLastestLintFileCreate(revision)){
-                Util.copyFile("testreport/testresult_lint.txt", BackupManager.getDailyRevisionBackupPath(revision)+"/lint.txt");
+            if(!isLastestLintFileCreate(localProjectPath, revision)){
+                Util.copyFile("testreport/testresult_lint.txt", BackupManager.getDailyRevisionBackupPath(localProjectPath, revision)+"/lint.txt");
             }
 
             String url = SystemEnv.getUrlForLocalpath(localProjectPath);
@@ -115,8 +115,8 @@ public class SvnMonitor extends Thread {
 
     }
     
-    public static boolean isLastestLintFileCreate(String revision){
-        String fileName = BackupManager.getDailyRevisionBackupPath(revision)+"/lint.txt";
+    public static boolean isLastestLintFileCreate(String localPath, String revision){
+        String fileName = BackupManager.getDailyRevisionBackupPath(localPath, revision)+"/lint.txt";
         return Util.isFileExist(fileName);
      }
     

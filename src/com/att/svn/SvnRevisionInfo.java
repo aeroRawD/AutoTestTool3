@@ -73,6 +73,7 @@ public class SvnRevisionInfo {
     }
 
     public String getRevId() {
+        if(revId!=null && revId.startsWith("r")) revId = revId.substring(1);
         return revId;
     }
 
@@ -89,7 +90,7 @@ public class SvnRevisionInfo {
     }
 
     public String getRevisionDetail() {
-        return revisionInfo + "\r\n" + changedPath + "\r\n" + "修改说明: "
+        return revisionInfo.trim() + "\r\n" + changedPath.trim() + "\r\n" + "修改说明: "
                 + comment;
     }
 }
