@@ -149,9 +149,12 @@ public class LintResult {
             String s = _myWarnings.get(i);
             String raw = s;
             if(s.indexOf(":")!=-1){
+                String fileName = s.substring(0, s.indexOf(":"));
                 s = s.substring(s.indexOf(":")+1);
+                
                 if(s.indexOf(":")!=-1){
                     s = s.substring(s.indexOf(":")+1);
+                    s = fileName+":"+s;
                     myWarnings.add(s);
                     myMap.put(s, raw);
                 }
@@ -161,9 +164,11 @@ public class LintResult {
             String s = _yourWarnings.get(i);
             String raw = s;
             if(s.indexOf(":")!=-1){
+                String fileName = s.substring(0, s.indexOf(":"));
                 s = s.substring(s.indexOf(":")+1);
                 if(s.indexOf(":")!=-1){
                     s = s.substring(s.indexOf(":")+1);
+                    s = fileName+":"+s;
                     yourWarnings.add(s);
                     yourMap.put(s, raw);
                 }
@@ -195,14 +200,14 @@ public class LintResult {
    
     
     public static void main(String[] args){
-        LintResult lintResult1 = new LintResult("data/backup/rev/powerword7/15891/lint.txt");
+        LintResult lintResult1 = new LintResult("data/backup/rev/powerword7/15941/lint.txt");
         System.out.println("errors:"+lintResult1.getErrorCount());
         System.out.println("warings:"+lintResult1.getWaringsCount());
         
-        LintResult lintResult2 = new LintResult("data/backup/rev/powerword7/15892/lint.txt");
+        LintResult lintResult2 = new LintResult("data/backup/rev/powerword7/15938/lint.txt");
         System.out.println("errors:"+lintResult2.getErrorCount());
         System.out.println("warings:"+lintResult2.getWaringsCount());
         
-        System.out.println("diff:"+lintResult2.diffWith(lintResult1));
+        System.out.println("diff:"+lintResult1.diffWith(lintResult2));
     }
 }

@@ -99,7 +99,7 @@ public class Builder {
     private boolean buildProject(String cmd, String projectpath, int tryTimes, StringBuilder buildError) {
         for (int i = 0; i < tryTimes; i++) {
 
-            List<String> cmdOutput = Util.getCmdOutput(cmd);
+            List<String> cmdOutput = Util.getCmdOutput(cmd, true);
             if (isApkBuildSuccessful(cmdOutput, projectpath)) {
                 Log.d("apk编译成功");
                 return true;
@@ -177,7 +177,7 @@ public class Builder {
     public boolean buildTestProject(String buildType, int tryTimes, StringBuilder buildError) {
 
         String cmd = SystemEnv.ant + " -f " + SystemEnv.TESTAPP_PROJECT_PATH
-                + "/build.xml " + buildType;
+                + "/build.xml clean " + buildType;
         Log.d("cmd:" + cmd);
         return buildProject(cmd, SystemEnv.TESTAPP_PROJECT_PATH, tryTimes, buildError);
     }

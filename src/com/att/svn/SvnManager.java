@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.att.build.BackupManager;
 import com.log.Log;
 import com.spx.adb.SystemEnv;
 import com.spx.adb.Util;
@@ -50,6 +51,22 @@ public class SvnManager {
 		}
 		logger.info("目录'" + projectPath + "'没有更新.");
 		return false;
+	}
+	
+	public String createDiffWithLastRev(String revId, String projectPath){
+	    String lastRevId = getLastRevId(revId, projectPath);
+	    String diffFile = "testreport/revisions/"+lastRevId+"_"+revId+".patch";
+	    List<String> cmdOutput = Util.getCmdOutput("svn diff -r"+lastRevId+":"+revId+" "+projectPath, "UTF-8");
+	    Util.createFile(diffFile, cmdOutput);
+	    
+	    diffFile = BackupManager.getDailyRevisionBackupPath(projectPath, revId)+"/"+lastRevId+"_"+revId+".patch";
+	    Util.createFile(diffFile, cmdOutput);
+	    return diffFile;
+	}
+	
+	public String getLastRevId(String revId, String projectPath){
+	    String lastLintFile = BackupManager.getLastLintFile(projectPath, revId);
+	    return lastLintFile;
 	}
 	
 	public SvnRevisionInfo getSvnRevisionDetail(String projectPath, String revId){
@@ -101,7 +118,10 @@ public class SvnManager {
 		// svn.checkoutProject(url, localpath, user, pwd);
 		// svn.update(localpath);
 
-		boolean up = SvnManager.getInstance().isUpdated("D:/data/powerword7");
-		System.out.println("updated:" + up);
+//		boolean up = SvnManager.getInstance().isUpdated("D:/data/powerword7");
+//		System.out.println("updated:" + up);
+		String lastRevId = SvnManager.getInstance().getLastRevId("15928", localpath);
+		System.out.println("lastRevId:"+lastRevId);
+		SvnManager.getInstance().createDiffWithLastRev("15928", localpath);
 	}
 }

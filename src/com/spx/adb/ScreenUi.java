@@ -98,8 +98,8 @@ public class ScreenUi {
 		return true;
 	}
 
-	public boolean clickText(String text) {
-		UiNode uiNode = getMatchNodeByText(text);
+	public boolean clickText2(String text) {
+		UiNode uiNode = getMatchNodeWithText(text);
 		if (uiNode == null)
 			return false;
 		int x = uiNode.getX() + uiNode.getWidth() / 2;
@@ -109,6 +109,17 @@ public class ScreenUi {
 				new NullOutputReceiver(), 4000);
 		return true;
 	}
+	public boolean clickText(String text) {
+        UiNode uiNode = getMatchNodeByText(text);
+        if (uiNode == null)
+            return false;
+        int x = uiNode.getX() + uiNode.getWidth() / 2;
+        int y = uiNode.getY() + uiNode.getHeight() / 2;
+
+        Util.runAdbCmd(device, "input tap " + x + " " + y,
+                new NullOutputReceiver(), 4000);
+        return true;
+    }
 
 	public List<UiNode> getData() {
 		SAXReader reader = new SAXReader();
@@ -123,6 +134,15 @@ public class ScreenUi {
 
 		return null;
 	}
+	
+	private UiNode getMatchNodeWithText(String text) {
+        for (UiNode uiNode : uiNodeList) {
+            if ((uiNode.getValue("text").contains(text))) {
+                return uiNode;
+            }
+        }
+        return null;
+    }
 
 	private UiNode getMatchNodeByText(String text) {
 		for (UiNode uiNode : uiNodeList) {

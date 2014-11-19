@@ -67,7 +67,8 @@ public class SvnInfo {
 	}
 
 	public String getRevision() {
-		return revision;
+		//return revision;
+	    return lastChangedRevId;
 	}
 
 	public void setRevision(String revision) {

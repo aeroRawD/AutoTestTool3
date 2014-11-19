@@ -122,11 +122,13 @@ public class Util {
 	}
 	
 	public static List<String> getCmdOutput(String cmds, String encode){
-		java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
+		//java.util.StringTokenizer st = new StringTokenizer(cmds, " ");
+	    logger.info(cmds);
 		String[] cmdArray = cmds.split(" ");
 		return getCmdOutput(cmdArray, false, encode);
 	}
 	public static List<String> getCmdOutput(String cmds){
+	    logger.info(cmds);
         return getCmdOutput(cmds, false, "UTF-8");
     }
 	
@@ -355,6 +357,8 @@ public class Util {
 	}
 	
 	public static boolean isFileExist(String filePath){
+	    if(Util.isNull(filePath)) return false;
+	    
 		File f = new File(filePath);
 		return f.exists();
 	}

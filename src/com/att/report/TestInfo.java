@@ -146,7 +146,7 @@ public class TestInfo {
 //    }
     
     public String getCoverage(){
-        int total = 500;//这个是手工用例的数量
+        int total = 500;//杩欎釜鏄墜宸ョ敤渚嬬殑鏁伴噺
         int cases =getUseCaseCount();
         return ""+(cases*100/total);
     }

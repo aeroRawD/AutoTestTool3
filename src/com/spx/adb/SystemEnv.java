@@ -11,6 +11,9 @@ public class SystemEnv {
     private static String pwd ="spx";
     public static String loopStartTime = "09:00";
     public static String loopEndTime = "19:57";
+    public static String priority = "all";
+    public static String runMode = "test";
+    
     static {
         List<String> fileContentLines = Util
                 .getFileContentLines("local.properties");
@@ -29,9 +32,20 @@ public class SystemEnv {
             if (line.startsWith("loop.end.time=")) {
                 loopEndTime = line.substring("loop.end.time=".length());
             }
+            if (line.startsWith("testcase.priority=")) {
+                priority = line.substring("testcase.priority=".length());
+            }
+            if (line.startsWith("run.mode=")) {
+                runMode = line.substring("run.mode=".length());
+            }
         }
         pwd = password;
         user = username;
+    }
+    
+    public static boolean isTestingMode(){
+        if(runMode.equals("test")) return true;
+        return false;
     }
     
     public static String getPassword(){

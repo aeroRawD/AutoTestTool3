@@ -22,9 +22,11 @@ public class Installer {
                 IDevice device = DeviceUtil.createDevice(serial);
                 ScreenUi sceenUi = ScreenUi.getScreenUiInstance(device);
                 
-                sceenUi.clickText("确定");
+                sceenUi.clickText("纭畾");
                 sceenUi.update();
-                sceenUi.clickText("安装");
+                sceenUi.clickText("瀹夎");
+                sceenUi.update();
+                sceenUi.clickText2("娓呯悊");
             }
 	    }).start();
 	    boolean installApk = Util.installApk(serial, apkFile);

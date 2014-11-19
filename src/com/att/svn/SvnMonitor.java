@@ -94,6 +94,11 @@ public class SvnMonitor extends Thread {
      * 检查SVN是否更新
      */
     private void checkSvnUpdate(String localProjectPath) {
+        
+        if(ApplicationBuilder.getInstance().isRunningTest()){
+            logger.info("正在运行测试, 等待...");
+            return;
+        }
         // logger.info("checkSvnUpdate()  "+localProjectPath);
         if (svnManager.isUpdated(localProjectPath)) {
             logger.info(localProjectPath + "有更新!");
@@ -104,10 +109,10 @@ public class SvnMonitor extends Thread {
                     localProjectPath, svnInfo.getLastChangedRevId());
             logger.info("revision info:" + revisionInfo.getRevisionDetail());
             
-            String revision = revisionInfo.getRevId();
-            if(!isLastestLintFileCreate(localProjectPath, revision)){
-                Util.copyFile("testreport/testresult_lint.txt", BackupManager.getDailyRevisionBackupPath(localProjectPath, revision)+"/lint.txt");
-            }
+//            String revision = revisionInfo.getRevId();
+//            if(!isLastestLintFileCreate(localProjectPath, revision)){
+//                Util.copyFile("testreport/testresult_lint.txt", BackupManager.getDailyRevisionBackupPath(localProjectPath, revision)+"/lint.txt");
+//            }
 
             String url = SystemEnv.getUrlForLocalpath(localProjectPath);
             notifySvnListeners(url, revisionInfo, localProjectPath);

@@ -80,13 +80,13 @@ public class MailSender {
                 return;
             }
         }
-        sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), false);
+        sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), false, null);
         notifyDataMap.put(url, System.currentTimeMillis());
     }
    
 
     public void sendTxtMail(List<String> recipients, String subject,
-            String mailContent) {
+            String mailContent, List<String> attached) {
         logger.info("will send text mail...");
 
         Session session = Session.getInstance(properties, authenticator);
@@ -108,7 +108,34 @@ public class MailSender {
             message.setSubject(subject);
 
             // Now set the actual message
-            message.setText(mailContent.toString());
+            //message.setText(mailContent.toString());
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(mailContent.toString(), 
+              "UTF-8", "plain");
+            MimeMultipart content = new MimeMultipart();
+            content.addBodyPart(textPart);
+            
+            if(attached!=null && attached.size()!=0){
+
+               
+                for(String fs:attached){
+                    try {
+                        if(Util.isFileExist(fs)){
+                            MimeBodyPart filePart = new MimeBodyPart();
+                            logger.info("fs exist:"+fs);
+                            filePart.attachFile(fs);
+                            content.addBodyPart(filePart);
+                        }else{
+                            logger.info("fs not exist:"+fs);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                
+                
+            }
+            message.setContent(content);
 
             // SmtpClient client = new SmtpClient();
             //
@@ -133,7 +160,7 @@ public class MailSender {
     }
     
     public void sendMail(List<String> recipients, String subject,
-            String textContent, boolean useHtml){
+            String textContent, boolean useHtml, List<String> attached){
         if(useHtml){
 //            StringBuilder html = new StringBuilder();
 //            html.append("<html><head><title>This is not usually displayed</title></head>");
@@ -141,9 +168,9 @@ public class MailSender {
 //            html.append(""+textContent);
 //            html.append("</div></body></html>");
 //            sendMessageWithEmbededImage(recipients, subject, html.toString());
-            sendTxtMail(recipients, subject, textContent);
+            sendTxtMail(recipients, subject, textContent, attached);
         }else{
-            sendTxtMail(recipients, subject, textContent);
+            sendTxtMail(recipients, subject, textContent, attached);
         }
     }
     
@@ -359,8 +386,11 @@ public class MailSender {
      * @param args
      */
     public static void main(String[] args) {
+        List<String> attached = new ArrayList<String>();
+        attached.add("data/backup/rev/test/15930/15929_15930.patch");
+            
         MailSender.getInstance().sendMail(MailSender.defaultRecipients,
-                "hahah", "yaya", true);
+                "hahah", "yaya", true, attached);
     }
 
 }
