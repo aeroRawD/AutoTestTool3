@@ -2,6 +2,7 @@ package com.spx.adb;
 
 import java.util.List;
 
+import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 
 public class Installer {
@@ -11,6 +12,10 @@ public class Installer {
 	
 	public static Installer getInstance(){
 		return instance;
+	}
+	
+	public static void uninstall(final String serial, String packageName){
+	    Util.removePackage(serial, packageName);
 	}
 	
 	public static void install(final String serial, String apkFile){
@@ -38,8 +43,10 @@ public class Installer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	    AndroidDebugBridge.init(false);
+	    Installer.uninstall("1298b223","com.kingsoft");
+	    Installer.install("1298b223", "E:/workspace/Powerword7/bin/Powerword7.apk");
+	    
 	}
 
 }

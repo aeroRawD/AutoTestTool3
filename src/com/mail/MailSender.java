@@ -1,5 +1,6 @@
 package com.mail;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,10 +122,17 @@ public class MailSender {
                 for(String fs:attached){
                     try {
                         if(Util.isFileExist(fs)){
-                            MimeBodyPart filePart = new MimeBodyPart();
-                            logger.info("fs exist:"+fs);
-                            filePart.attachFile(fs);
-                            content.addBodyPart(filePart);
+                            File file = new File(fs);
+                            if (file.length() < 600 * 1024 * 1024) {
+                                MimeBodyPart filePart = new MimeBodyPart();
+                                logger.info("fs exist:" + fs);
+                                filePart.attachFile(fs);
+                                content.addBodyPart(filePart);
+                            } else {
+                                logger.info("file is too big to send. " + fs);
+                            }
+                                
+                            
                         }else{
                             logger.info("fs not exist:"+fs);
                         }

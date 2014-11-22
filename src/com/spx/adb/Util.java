@@ -432,6 +432,7 @@ public class Util {
     }
 	
 	public static boolean installApk(String serial, String path){
+	    
 	    List<String> cmdOutput = Util.getCmdOutput("adb -s "+serial+" install -r "+path);
 	    //List<String> cmdOutput = Util.getCmdOutput("adb -s 7148000200000001 install -r D:/data/test/bin/Powerword7Test-debug.apk");
 	    logger.log(Level.INFO, "安装apk"+path+" to ["+serial+"]");
@@ -569,9 +570,11 @@ public class Util {
             logger.info("install apk to device:"+device.getName());
             try {
                 //device.installPackage(localApkPath, true);
-                if(Util.installApk(device, localApkPath, pacakgeName)){
-                    logger.info("install finish");
-                }
+                Util.removePackage(device.getSerialNumber(), pacakgeName);
+                Installer.install(device.getSerialNumber(), localApkPath);
+//                if(Util.installApk(device, localApkPath, pacakgeName)){
+//                    logger.info("install finish");
+//                }
                 if(Util.isApkInstalled(device, pacakgeName)){
                     logger.info("install succeed!");
                     installedDevices.add(device.getSerialNumber());

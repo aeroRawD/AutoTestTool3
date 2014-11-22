@@ -105,31 +105,32 @@ public class LintResult {
 
     public String diffWith(LintResult lresult){
         StringBuilder diff = new StringBuilder();
-        diff.append(getLastLine()+"\r\n");
+//        diff.append(getLastLine()+"\r\n");
         
         int myError = this.getErrorCount();
         int yourError = lresult.getErrorCount();
         if(myError!=yourError){
             if(myError<yourError){
-                diff.append("error减少了"+(yourError-myError)+"个;");
+                //diff.append("error减少了"+(yourError-myError)+"个;  ");
             } else{
-                diff.append("error增加了"+(myError-yourError)+"个;");
+                diff.append("error增加了"+(myError-yourError)+"个;  ");
             }
         }else{
-            diff.append("error数量不变;");
+            diff.append("error数量不变;  ");
         }
         
         int myWarings = this.getWaringsCount();
         int yourWarings = lresult.getWaringsCount();
         if (myWarings != yourWarings) {
             if(myWarings<yourWarings){
-                diff.append("warings减少了"+(yourWarings-myWarings)+"个;");
+                //diff.append("warings减少了"+(yourWarings-myWarings)+"个; ");
             } else{
-                diff.append("warings增加了"+(myWarings-yourWarings)+"个;");
+                diff.append("warings增加了"+(myWarings-yourWarings)+"个; ");
             }
         } else {
-            diff.append("warings数量不变;");
+            diff.append("warings数量不变; ");
         }
+        diff.append("\r\n");
         diff.append("\r\n");
         
         List<String> myWarnings = getWarningList();
@@ -185,15 +186,15 @@ public class LintResult {
             }
             if(sb.length()>MAX_LENGTH_OF_DIFF) return sb.toString();
         }
-        for(String s:yourWarnings){
-            if(!myWarnings.contains(s)){
-                if(yourMap.get(s)!=null){
-                    s = yourMap.get(s);
-                }
-                sb.append("减少的告警:"+s+"\r\n");
-            }
-            if(sb.length()>MAX_LENGTH_OF_DIFF) return sb.toString();
-        }
+//        for(String s:yourWarnings){
+//            if(!myWarnings.contains(s)){
+//                if(yourMap.get(s)!=null){
+//                    s = yourMap.get(s);
+//                }
+//                sb.append("减少的告警:"+s+"\r\n");
+//            }
+//            if(sb.length()>MAX_LENGTH_OF_DIFF) return sb.toString();
+//        }
         
         return sb.toString();
     }

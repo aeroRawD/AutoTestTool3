@@ -10,7 +10,7 @@ public class SystemEnv {
     private static String user = "shaopengxiang";
     private static String pwd ="spx";
     public static String loopStartTime = "09:00";
-    public static String loopEndTime = "19:57";
+    public static String loopEndTime = "21:00";
     public static String priority = "all";
     public static String runMode = "test";
     
