@@ -37,7 +37,7 @@ public class Util {
 	    int tryTimes = 3;
 	    while(tryTimes>0){
 	        try {
-	            //logger.info("cmd:"+cmd);
+	            logger.info("cmd:"+cmd);
 	            device.executeShellCommand(cmd, receiver, timeout,
 	                    TimeUnit.MILLISECONDS);
 	            System.out.println("cmd finished, time:"+(new Date()));
@@ -385,6 +385,18 @@ public class Util {
 	    
 	}
 	
+    public static boolean isProcessExist(String serial, String process) {
+        List<String> cmdOutput = Util.getCmdOutput("adb -s " + serial + " shell ps", true);
+        for (String p : cmdOutput) {
+            p = p.trim();
+            if (p.contains(process) &&  p.endsWith(process)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+	
 	public static boolean deleteFile(String filePath){
 		File f = new File(filePath);
 		int tryTimes = 3;
@@ -619,6 +631,7 @@ public class Util {
     public static List<String> getFileContentLines(File file, String encode) {
         List<String> lines = new ArrayList<String>();
         try {
+            if(!file.exists()) return null;
             // BufferedReader br = new BufferedReader(new FileReader(file));
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file), encode));

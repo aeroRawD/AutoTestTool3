@@ -14,6 +14,20 @@ public class SystemEnv {
     public static String priority = "all";
     public static String runMode = "test";
     
+    public static String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";
+    public static String lint ="D:/Android/adt-bundle-windows-x86_64-20140702/sdk/tools/lint.bat";
+    
+    public static final String APP_PACKAGE_NAME="com.kingsoft";
+    public static final String TESTAPP_PACKAGE_NAME="com.kingsoft.test";
+    
+    public static final String APP_PROJECT_URL = "http://trac.s.iciba.com/svn/ciba-mobile/android/Powerword7";
+    public static String APP_PROJECT_PATH = "D:/data/powerword7";
+    
+    public static final String TESTAPP_PROJECT_URL = "http://trac.s.iciba.com/svn/ciba-mobile/android/Testing/TestPowerword7";
+    public static String TESTAPP_PROJECT_PATH = "D:/data/test";
+    
+    public static int startUpTimeTestCount = 20;
+    
     static {
         List<String> fileContentLines = Util
                 .getFileContentLines("local.properties");
@@ -38,6 +52,24 @@ public class SystemEnv {
             if (line.startsWith("run.mode=")) {
                 runMode = line.substring("run.mode=".length());
             }
+            if (line.startsWith("ant=")) {
+                ant = line.substring("ant=".length());
+            }
+            if (line.startsWith("lint=")) {
+                lint = line.substring("lint=".length());
+            }
+            if (line.startsWith("app.project.path=")) {
+                APP_PROJECT_PATH = line.substring("app.project.path=".length());
+            }
+            if (line.startsWith("test.project.path=")) {
+                TESTAPP_PROJECT_PATH = line.substring("test.project.path=".length());
+            }
+            if (line.startsWith("startuptime.test.count=")) {
+                String count = line.substring("startuptime.test.count=".length());
+                try{
+                    startUpTimeTestCount = Integer.parseInt(count);
+                }catch(Exception ex){}
+            }
         }
         pwd = password;
         user = username;
@@ -61,17 +93,7 @@ public class SystemEnv {
         
     }
     
-	public static final String ant ="D:/Dev/Ant/apache-ant-1.9.4/bin/ant.bat";
-	public static final String lint ="D:/Android/adt-bundle-windows-x86_64-20140702/sdk/tools/lint.bat";
 	
-	public static final String APP_PACKAGE_NAME="com.kingsoft";
-	public static final String TESTAPP_PACKAGE_NAME="com.kingsoft.test";
-	
-	public static final String APP_PROJECT_URL = "http://trac.s.iciba.com/svn/ciba-mobile/android/Powerword7";
-	public static final String APP_PROJECT_PATH = "D:/data/powerword7";
-	
-	public static final String TESTAPP_PROJECT_URL = "http://trac.s.iciba.com/svn/ciba-mobile/android/Testing/TestPowerword7";
-	public static final String TESTAPP_PROJECT_PATH = "D:/data/test";
 	
 	public static HashMap<String, String> urlMap = new HashMap<String, String>();
 	static {

@@ -20,16 +20,46 @@ import com.log.Log;
  */
 public class AppStartupTimeTest {
 	private IDevice device = null;
-	private static final int MAX_TEST_COUNT = 6;
+	private String serial = null;
+	private int MAX_TEST_COUNT = SystemEnv.startUpTimeTestCount;
 //	private int windowWidth = 600, windowHeight = 800; 
 	private int[] loc=new int[2];
+	private int startUpTimeAvg = 0;
+	
 	public void perform(IDevice device) {
+	    System.out.println("perform() ... ");
 		this.device = device;
+		serial = device.getSerialNumber();
 		
 		startPowerword();
-		loc = ScreenUi.getScreenUiInstance(device).getScreenLocation("退出");
-		if(loc==null)
+		Util.sleep(2000);
+		
+		swipLeft();
+		Util.sleep(4000);
+		
+		ScreenUi screenUiInstance = ScreenUi.getScreenUiInstance(device);
+		screenUiInstance.update();
+		if(isTextShowing(screenUiInstance, "开始体验")){
+		    System.out.println("找到了'开始体验'");
+		    screenUiInstance.clickText("开始体验");
+		    Util.sleep(4000);
+		} else {
+		    System.out.println("找不到'开始体验'");
+		}
+		
+		
+        if (!Util.isProcessExist(device.getSerialNumber(), "com.kingsoft")) {
+            startPowerword();
+        }
+        Util.sleep(4000);
+        
+        screenUiInstance.update();
+        loc = screenUiInstance.getScreenLocation("退出");
+		
+		if(loc==null){
+		    System.out.println("找不到退出按钮.");
 			return;
+		}
 		
 		System.out.println("location:  x:"+loc[0]+",y:"+loc[1]);
 //		try {
@@ -49,16 +79,83 @@ public class AppStartupTimeTest {
 
 		for (int i = 0; i < MAX_TEST_COUNT; i++) {
 			startPowerword();
-			Util.sleep(4000);
-			quitPowerword();
-			Util.sleep(1000);
+			Util.sleep(3000);
+			if (Util.isProcessExist(device.getSerialNumber(), "com.kingsoft")) {
+			    System.out.println("com.kingsoft process is running.");
+			    if(isInTranslatePage()){
+			        System.out.println("词霸界面已经显示");
+			        quitPowerword();
+			        Util.sleep(2000);
+			        
+			        if(Util.isProcessExist(device.getSerialNumber(), "com.kingsoft")){
+			            System.out.println("词霸应用仍在");
+			            screenUiInstance.update();
+			            if(isTextShowing(screenUiInstance, "取消")){
+			                System.out.println("找到取消字符串!");
+			                screenUiInstance.clickText("取消");
+			            } else{
+			                System.out.println("没有找到取消");
+			            }
+			        } else {
+			            System.out.println("词霸已经不在");
+			        }
+			    } else{
+			        System.out.println("词霸界面没有显示");
+			        if(Util.isProcessExist(device.getSerialNumber(), "com.kingsoft")){
+                        System.out.println("词霸应用仍在");
+                        screenUiInstance.update();
+                        if(isTextShowing(screenUiInstance, "取消")){
+                            System.out.println("找到取消字符串!");
+                            screenUiInstance.clickText("取消");
+                        } else{
+                            System.out.println("没有找到取消");
+                        }
+			        }
+			    }
+			    
+			}
+			
+			
+			
 		}
-		int startUpTimeAvg = receiver.getStartupTimeAvg();
+		startUpTimeAvg = receiver.getStartupTimeAvg();
 		Log.d("平均启动时间:" + startUpTimeAvg);
 		receiver.stop();
 		th.interrupt();
 		
 		saveProp(startUpTimeAvg);
+	}
+	
+	public int getStartUpTimeAvg(){
+	    return startUpTimeAvg;
+	}
+	
+	private boolean isInTranslatePage(){
+	    String serial = device.getSerialNumber();
+	    ScreenUi screenUiInstance = ScreenUi.getScreenUiInstance(device);
+	    screenUiInstance.update();
+	    
+	    if(isTextShowing(screenUiInstance, "退出") && isTextShowing(screenUiInstance, "清空")
+	            && isTextShowing(screenUiInstance, "拍照") && isTextShowing(screenUiInstance, "翻译")){
+	        return true;
+	    }
+	    
+	    return false;
+	}
+	
+	private boolean isTextShowing(ScreenUi screen, String text){
+	    int[] loc = getTextLocation(screen, text);
+	    if(loc!=null && loc.length==2 && loc[0]>0 && loc[1]>0){
+	        return true;
+	    }
+	    
+	    if(screen.containText(text)) return true;
+	    return false;
+	}
+	
+	private int[] getTextLocation(ScreenUi screen, String text){
+	    int[] loc = screen.getScreenLocation(text);
+	    return loc;
 	}
 
 	private void saveProp(int avgTime) {
@@ -67,7 +164,7 @@ public class AppStartupTimeTest {
 			if (!testreportFile.exists()) {
 				testreportFile.mkdirs();
 			}
-			File propFile = new File("testreport/prop.txt");
+			File propFile = new File("testreport/"+serial+"/starup.txt");
 			if (!propFile.exists()) {
 				propFile.createNewFile();
 			}
@@ -82,13 +179,28 @@ public class AppStartupTimeTest {
 	}
 
 	private void startPowerword() {
+	    System.out.println("start com.kingsoft");
 		runCmd("am start -n com.kingsoft/com.kingsoft.StartActivity");
+	}
+	
+	private void clickText(){
+	    
 	}
 
 	private void quitPowerword() {
 		
 		runCmd("input tap "+loc[0]+" "+loc[1]);
 	}
+	
+	private void swipLeft(){
+	    runCmd("input touchscreen swipe 500 200 10 200 200");
+	    runCmd("input swipe 500 200 10 200");
+	}
+	
+	private void swipRight(){
+        runCmd("input touchscreen swipe 10 200 500 200 200");
+        runCmd("input swipe 10 200 500 200");
+    }
 
 	private void runCmd(String cmd) {
 		String output = Util.runAdbCmdGetReturn(device, cmd, 2000, true);

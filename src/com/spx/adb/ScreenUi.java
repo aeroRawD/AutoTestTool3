@@ -68,6 +68,10 @@ public class ScreenUi {
 		}
 	}
 	
+//	public boolean containTexts(String[] texts){
+//	    
+//	}
+	
 	public int[] getScreenLocation(String text){
 		int[] loc = new int[2];
 		UiNode uiNode = getMatchNodeByText(text);

@@ -99,7 +99,7 @@ public class Builder {
     private boolean buildProject(String cmd, String projectpath, int tryTimes, StringBuilder buildError) {
         for (int i = 0; i < tryTimes; i++) {
 
-            List<String> cmdOutput = Util.getCmdOutput(cmd, true);
+            List<String> cmdOutput = Util.getCmdOutput(cmd, false);
             if (isApkBuildSuccessful(cmdOutput, projectpath)) {
                 Log.d("apk编译成功");
                 return true;

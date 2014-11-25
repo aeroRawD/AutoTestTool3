@@ -141,14 +141,14 @@ public class AdbTest {
 	public static void main(String[] args) {
 		Log.d("start");
 		AdbTest test = new AdbTest();
-		test.init("2008edd8f316");
+		test.init("7148000200000001");
 		Log.d("midle");
 //		test.dumpUi();
 //		Log.d("after dump");
 //		test.parseUiDump();
 //		test.clickText("主题风格");
-//		test.testAppStartupTime();
-		test.testRecord();
+		test.testAppStartupTime();
+
 		AndroidDebugBridge.terminate();
 		Log.d("end");
 	}

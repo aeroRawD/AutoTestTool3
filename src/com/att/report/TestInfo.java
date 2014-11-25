@@ -18,6 +18,7 @@ public class TestInfo {
     private String phoneName;
     private String phoneCpu;
     private String testStartTime;
+    private int startUpTime;
     
     private int codeLines;
     private int apkSize;
@@ -135,6 +136,8 @@ public class TestInfo {
         this.findbugsWaringCount = findbugsWaringCount;
     }
     
+    
+    
 //    public String replaceTags(String html, String tag , String value) {
 //        Set<String> keys = data.keySet();
 //        Iterator<String> keyIt = keys.iterator();
@@ -145,6 +148,14 @@ public class TestInfo {
 //        return html;
 //    }
     
+    public int getStartUpTime() {
+        return startUpTime;
+    }
+
+    public void setStartUpTime(int startUpTime) {
+        this.startUpTime = startUpTime;
+    }
+
     public String getCoverage(){
         int total = 500;//这个是手工用例的数量
         int cases =getUseCaseCount();
@@ -163,6 +174,7 @@ public class TestInfo {
         html = html.replace("{androidos_build}",this.getAndroidOsBuild());
         html = html.replace("{lint_warnings}",DailyLintChecker.getCurrentRevWarnings(SystemEnv.APP_PROJECT_PATH));
         html = html.replace("{cpu_name}",this.getPhoneCpu());
+        html = html.replace("{startup.time.avg}",this.getStartUpTime()+"");
         
         DeviceMemInfo dmi = new DeviceMemInfo("testreport/"+serial+"/meminfo.txt");
         html = html.replace("{MemTotal}",dmi.getTotalMem());
