@@ -15,6 +15,7 @@ import com.android.ddmlib.AndroidDebugBridge;
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.logcat.LogCatListener;
 import com.android.ddmlib.logcat.LogCatMessage;
+import com.att.Constant;
 import com.att.report.BarDataBean;
 import com.att.report.DeviceProp;
 import com.att.report.MailContentBuilder;
@@ -50,7 +51,7 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
     private DeviceProp prop = null;
 
     private static final String UNION_ERRORS_FILE = "union_errors.txt";
-    private boolean needSendMail = true;
+//    private boolean needSendMail = true;
     private StringBuilder testInfo = new StringBuilder();
 
     public InstrumentTestRunner(String serial, TestcaseRunningListener listener) {
@@ -125,34 +126,84 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
         stopLocat();
 
         collectTestResult();
-        logger.info("needSendMail:"+needSendMail);
-        if (needSendMail) {
+        
+        parseProp();
 
-            parseProp();
+        createTestInfo();
 
-            createTestInfo();
+        // 保存到本地
+        saveTestInfo();
+        
+        logger.info("save Failed TestCases.");
+        saveTestCases(this.allFailedCases, Constant.TESTS_FAILS);
+        
+        logger.info("save succeed TestCases.");
+        saveTestCases(this.allSucceedCases, Constant.TESTS_SUCCEEDS);
 
-            // 保存到本地
-            saveTestInfo();
-
-            saveData();
-            
-            try{
-                String mailContent = generateMailContent();
-                List<String> attached = getAttachedFiles();
-                String inlinePng1 = createTestCaseCountBarImg();
-               
-                MailSender.getInstance().sendHtmlMail(MailSender.defaultRecipients,
-                        "[自动化测试结果邮件]用例级别:"+getCaseLevel()+", 请查看测试报告", mailContent, attached, inlinePng1);
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
-        }
-        else{
-            saveTestInfo();
-            saveData();
+        saveData();
+        
+        sendTestResultEmail();
+    }
+    
+    private void sendTestResultEmail(){
+        
+        //如果是今天最后一次全测试,  那么发送汇总的结果
+        if(isLastRoundOfToday()){
+            sendDailyFullTestResult();
+        } else {
+            sendNormalFullTestResult();
         }
         
+    }
+    
+    //发送普通的单次全用例测试结果邮件
+    private void sendNormalFullTestResult(){
+        try{
+            String mailContent = generateMailContent(false);
+            List<String> attached = getAttachedFiles();
+            String inlinePng1 = createTestCaseCountBarImg();
+           
+            MailSender.getInstance().sendHtmlMail(MailSender.defaultRecipients,
+                    "[自动化测试结果邮件]用例级别:"+getCaseLevel()+", 请查看测试报告", mailContent, attached, inlinePng1);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    //发送每天的全用例测试结果,  汇总结果
+    private void sendDailyFullTestResult(){
+        try{
+            String mailContent = generateMailContent(true);
+            List<String> attached = getAttachedFiles();
+            String inlinePng1 = createTestCaseCountBarImg();
+           
+            MailSender.getInstance().sendHtmlMail(getMailRecipients(),
+                    "[自动化测试结果邮件]今天的测试结果,请查看测试报告", mailContent, attached, inlinePng1);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    private List<String> getMailRecipients() {
+        List<String> recipients = new ArrayList<String>();
+        recipients.add("shaopengxiang@kingsoft.com");
+        if(!SystemEnv.isTestingMode()){
+            recipients.add("jiangke@kingsoft.com");
+            recipients.add("GuoQin@kingsoft.com");
+            recipients.add("taohongxia@kingsoft.com");
+            recipients.add("gaoxiang1@kingsoft.com");
+        }
+
+        return recipients;
+    }
+    
+    //判断当前的测试,是否是今天最后一次
+    private static boolean isLastRoundOfToday(){
+        String now = Util.getTimeStr("HH:mm");
+        if (now.compareTo(SystemEnv.loopEndTime) > 0 || now.compareTo(SystemEnv.loopStartTime) < 0) {
+            return true;
+        }
+        return false;
     }
 
     private void cleanupWorkspace() {
@@ -246,7 +297,25 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
         sb.append("startup.time.avg:").append(this.startUpTimeAvg)
                 .append("\r\n");
         Util.createFile(this.getWorkspace() + "/final.txt", sb.toString());
+        
+        
     }
+    
+    private void saveTestCases(List<UseCase> cases, String saveFileName){
+        
+        if(cases!=null && cases.size()>0){
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<cases.size();i++){
+                UseCase useCase = cases.get(i);
+                sb.append(useCase.getAttr("classname") + "."
+                        + useCase.getAttr("name")).append("\r\n");
+            }
+            Util.createFile(this.getWorkspace() + "/"+saveFileName, sb.toString());
+        }
+        
+    }
+    
+    
 
     private void parseProp() {
         prop = new DeviceProp(serial);
@@ -297,11 +366,11 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
             
             UseCaseRunResult result = lastTestResult.get(i);
             String value = result.getValue("usecase_all");
-            data.setSucceed(0);
+            data.setTotal(0);
             data.setFailed(0);
             data.setTitle("#");
             try {
-                data.setSucceed((int) Double.parseDouble(result.getValue("usecase_all")));
+                data.setTotal((int) Double.parseDouble(result.getValue("usecase_all")));
                 data.setFailed((int) Double.parseDouble(result.getValue("usecase_fail")));
             } catch (Exception e) {
                 //e.printStackTrace();
@@ -324,9 +393,15 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
             
             data.setTitle(runId);
             
-            if(data.getSucceed()!=0){
+            if(SystemEnv.isTestingMode()){
                 barData.add(data);
+            } else{
+                if (data.getTotal() != 0 && data.getTotal() > 100
+                        && data.getFailed() < 100) {
+                    barData.add(data);
+                } 
             }
+           
             
             
         }
@@ -348,7 +423,7 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
         String[] titles = new String[barDataBeans.size()];
         for(int i=0;i<barDataBeans.size();i++){
             BarDataBean barDataBean = barDataBeans.get(i);
-            data[0][i] = barDataBean.getSucceed();
+            data[0][i] = barDataBean.getTotal();
             data[1][i] = barDataBean.getFailed();
             String title = barDataBean.getTitle();
             if(!set.contains(title)){
@@ -387,12 +462,12 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
         Util.createFile(getWorkspace() + "/" + UNION_ERRORS_FILE, unionContents);
     }
 
-    private String generateMailContent() {
+    private String generateMailContent(boolean dailyReport) {
         String fileContent = Util.getFileContent("data/testresult.html");
         MailContentBuilder mailContentBuilder = new MailContentBuilder(
                 fileContent, allCases, allFailedCases, allSucceedCases,
                 mTestInfo);
-        mailContentBuilder.build();
+        mailContentBuilder.build(dailyReport);
         String mailContent = mailContentBuilder.buildHtmlMailContent();
         return mailContent;
     }
@@ -778,8 +853,13 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
         InstrumentTestRunner runner = new InstrumentTestRunner("0149C6F415019008",
                 null);
         //runner.collectTestResult();
+        
+        //测试图表的生成
         String createTestCaseCountBarImg = runner.createTestCaseCountBarImg();
         System.out.println("createTestCaseCountBarImg:"+createTestCaseCountBarImg.toString());
+        
+        //判断是否是当天最后一轮测试
+        System.out.println("is last round:"+runner.isLastRoundOfToday());
         
 //        int lastRunnerId = runner.getLastRunId();
 //        System.out.println("lastRunnerId:"+lastRunnerId);

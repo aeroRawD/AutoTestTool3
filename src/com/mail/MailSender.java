@@ -84,6 +84,36 @@ public class MailSender {
         sendMail(MailSender.defaultRecipients, "[自动邮件]编译失败呀, 请检查"+url+"上代码是否正常.", buildError.toString(), false, null);
         notifyDataMap.put(url, System.currentTimeMillis());
     }
+    
+    /**
+     * 发送安装失败的邮件提醒
+     */
+    public void sendInstallFailedNotify(String packageNames, String buildError){
+        if(notifyDataMap.get(packageNames)!=null){
+            long lastNotifyTime = notifyDataMap.get(packageNames);
+            if(System.currentTimeMillis()- lastNotifyTime < 60*60*1000){
+                logger.info("alert mail already sent nearby.");
+                return;
+            }
+        }
+        sendMail(MailSender.defaultRecipients, "[自动邮件]安装失败呀, 请检查"+packageNames+"是否正常编译", buildError.toString(), false, null);
+        notifyDataMap.put(packageNames, System.currentTimeMillis());
+    }
+    
+    /**
+     * 发送运行用例失败的邮件提醒
+     */
+    public void sendRunTestFailedNotify(String msg){
+        if(notifyDataMap.get(msg)!=null){
+            long lastNotifyTime = notifyDataMap.get(msg);
+            if(System.currentTimeMillis()- lastNotifyTime < 60*60*1000){
+                logger.info("alert mail already sent nearby.");
+                return;
+            }
+        }
+        sendMail(MailSender.defaultRecipients, "[自动邮件]运行用例失败, 请检查", msg, false, null);
+        notifyDataMap.put(msg, System.currentTimeMillis());
+    }
    
 
     public void sendTxtMail(List<String> recipients, String subject,

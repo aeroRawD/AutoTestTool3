@@ -141,7 +141,7 @@ public class AdbTest {
 	public static void main(String[] args) {
 		Log.d("start");
 		AdbTest test = new AdbTest();
-		test.init("7148000200000001");
+		test.init("0149C6F415019008");
 		Log.d("midle");
 //		test.dumpUi();
 //		Log.d("after dump");

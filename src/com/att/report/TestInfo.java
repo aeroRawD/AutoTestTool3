@@ -1,10 +1,13 @@
 package com.att.report;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.att.build.DailyLintChecker;
 import com.spx.adb.SystemEnv;
+import com.spx.adb.Util;
 
 public class TestInfo {
     private int useCaseCount;
@@ -28,11 +31,21 @@ public class TestInfo {
     private String phoneMemSize;
     private int maxHeapAlloc = 0;
     private String serial;
+    private String runId;
     
     public TestInfo(String s){
         serial = s;
     }
     
+    
+    public String getRunId() {
+        return runId;
+    }
+
+    public void setRunId(String runId) {
+        this.runId = runId;
+    }
+
     public String getSerial(){
         return serial;
     }
@@ -186,6 +199,57 @@ public class TestInfo {
         return html;
     }
     
+    public static TestInfo createTestInfoFromFile(String serial, String path){
+        List<String> fileContentLines = Util.getFileContentLines(path);
+        HashMap<String, String> map = new HashMap<String, String>();
+        for(String s:fileContentLines){
+            if(s.indexOf(":")==-1) continue;
+            String key = s.substring(0, s.indexOf(":"));
+            String value ="";
+            if(!s.endsWith(":")) {
+                value = s.substring(s.indexOf(":")+1);
+            }
+            map.put(key, value);
+        }
+        
+        TestInfo testInfo = new TestInfo(serial);
+        testInfo.setRunId(map.get("run_id"));
+        testInfo.setTestStartTime(map.get("testing_time"));
+        testInfo.setTestduration(map.get("testing_duration"));
+        try{
+            testInfo.setUseCaseCount(Integer.parseInt(map.get("usecase_all")));
+        }catch(Exception ex){}
+        try{
+            testInfo.setUseCaseFailCount(Integer.parseInt(map.get("usecase_fail")));
+        }catch(Exception ex){}
+        try{
+            testInfo.setWifiUseCaseCount(Integer.parseInt(map.get("usecase_wifi_count")));
+        }catch(Exception ex){}
+        try{
+            testInfo.setWifiUseCaseFailCount(Integer.parseInt(map.get("usecase_wifi_fail_count")));
+        }catch(Exception ex){}
+        testInfo.setPhoneName(map.get("phone_name"));
+        testInfo.setPhoneCpu(map.get("phone_cpu"));
+        testInfo.setAndroidOsBuild(map.get("android_os_build"));
+        try{
+            testInfo.setStartUpTime(Integer.parseInt(map.get("startup.time.avg")));
+        }catch(Exception ex){}
+        return testInfo;
+    }
     
-    
+    public static void main(String[] args){
+        TestInfo testInfo = TestInfo.createTestInfoFromFile("xxxx", "data/backup/workspace/2008edd8f316/2014-11-27_085010/final.txt");
+        if(testInfo!=null){
+            System.out.println("android build:"+testInfo.getAndroidOsBuild());
+            System.out.println("getPhoneCpu:"+testInfo.getPhoneCpu());
+            System.out.println("getPhoneName:"+testInfo.getPhoneName());
+            System.out.println("getStartUpTime:"+testInfo.getStartUpTime());
+            System.out.println("getTestduration:"+testInfo.getTestduration());
+            System.out.println("getTestStartTime:"+testInfo.getTestStartTime());
+            System.out.println("getUseCaseCount:"+testInfo.getUseCaseCount());
+            System.out.println("getUseCaseFailCount:"+testInfo.getUseCaseFailCount());
+            System.out.println("getWifiUseCaseCount:"+testInfo.getWifiUseCaseCount());
+            System.out.println("getWifiUseCaseFailCount:"+testInfo.getWifiUseCaseFailCount());
+        }
+    }
 }

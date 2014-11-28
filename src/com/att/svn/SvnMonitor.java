@@ -57,7 +57,7 @@ public class SvnMonitor extends Thread {
                 } else {
                     logger.info("当前不需要实时监控svn");
                     if (!DailyRunner2.getInstance().isRuning() ) {
-                        DailyRunner2.getInstance().dailyPerfom();
+                        DailyRunner2.getInstance().dailyPerfom(true);
                     }
                     Util.sleep(HEART_BEAT_TIME);
                 }

@@ -250,7 +250,7 @@ public class AppStartupTimeTest {
 				}
 
 				if (line.contains(TAG_END) && !start) {
-					// Log.d("end line:" + line);
+					Log.d("end line:" + line);
 					start = true;
 					endTime = getTimeFromLogcatLine(line);
 					Log.d(line + "\t" + endTime);

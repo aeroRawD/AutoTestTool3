@@ -8,6 +8,7 @@ import java.util.List;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.CategoryDataset;
 
+import com.att.report.HisotoryDataCollector;
 import com.chart.A3BarChartCreator;
 import com.spx.adb.Util;
 
@@ -24,26 +25,34 @@ public class UseCaseDataGenerator {
 
     public List<UseCaseRunResult> getLastTestResult(String serial, int count) {
         String path = "data/backup/workspace/" + serial;
-        File workspace = new File(path);
-        String[] subpaths = workspace.list();
-        System.out.println("subpaths:"+subpaths);
-        if (subpaths == null)
-            return null;
-        
-        System.out.println("subpaths.length:"+subpaths.length);
+        List<String> lastFileNames = HisotoryDataCollector.getLastFileNames(path, null, count);
+//        File workspace = new File(path);
+//        String[] subpaths = workspace.list();
+//        System.out.println("subpaths:"+subpaths);
+//        if (subpaths == null)
+//            return null;
+//        
+//        System.out.println("subpaths.length:"+subpaths.length);
+//
+//        Arrays.sort(subpaths);
+//        List<UseCaseRunResult> results = new ArrayList<UseCaseRunResult>();
+//        
+//        int c = 0;
+//        int start = subpaths.length-count;
+//        if(start <0) start =0;
+//        for (int i = start; c < count && i <subpaths.length; i++,c++) {
+//            UseCaseRunResult ucr = new UseCaseRunResult(path + "/"
+//                    + subpaths[i]+"/final.txt");
+//            results.add(ucr);
+//        }
 
-        Arrays.sort(subpaths);
         List<UseCaseRunResult> results = new ArrayList<UseCaseRunResult>();
-        
-        int c = 0;
-        int start = subpaths.length-count;
-        if(start <0) start =0;
-        for (int i = start; c < count && i <subpaths.length; i++,c++) {
+        for(int i=0;i<lastFileNames.size();i++){
             UseCaseRunResult ucr = new UseCaseRunResult(path + "/"
-                    + subpaths[i]+"/final.txt");
-            results.add(ucr);
+                  + lastFileNames.get(i)+"/final.txt");
+          results.add(ucr);
         }
-
+        
         return results;
     }
     
@@ -71,7 +80,7 @@ public class UseCaseDataGenerator {
     
     public static void main(String[] args){
         List<UseCaseRunResult> lastTestResult = UseCaseDataGenerator
-                .getInstance().getLastTestResult("2008edd8f316", 16);
+                .getInstance().getLastTestResult("0149C6F415019008", 32);
         for(int i=0;i<lastTestResult.size();i++){
             UseCaseRunResult useCaseRunResult = lastTestResult.get(i);
             System.out.println("name:"+useCaseRunResult.getName());

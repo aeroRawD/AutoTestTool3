@@ -51,7 +51,7 @@ public class DailyRunner2 implements TestcaseRunningListener{
         return false;
     }
     
-    public void dailyPerfom(){
+    public void dailyPerfom(boolean build){
         
         lastPerformTime = System.currentTimeMillis();
         logger.info("dailyPerfom E....");
@@ -59,14 +59,25 @@ public class DailyRunner2 implements TestcaseRunningListener{
         createDailyRunnerLogFile();
         
         //打包并备份
-        DailyBuilder builder = new DailyBuilder();
-        builder.perform();
-//        
+        if (build) {
+            DailyBuilder builder = new DailyBuilder();
+            builder.perform();
+        }
+       
         //检查lint告警, 并备份
         DailyLintChecker checker = new DailyLintChecker();
         checker.perform(SystemEnv.APP_PROJECT_PATH);
         
-        runTestCase();
+        try {
+            runTestCase();
+        } catch (InstallException ie) {
+            ie.printStackTrace();
+            MailSender.getInstance().sendInstallFailedNotify(
+                    ie.getPackageName(), ie.getFail());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MailSender.getInstance().sendRunTestFailedNotify(ex.getMessage());
+        }
         
         log.close();
         
@@ -79,8 +90,7 @@ public class DailyRunner2 implements TestcaseRunningListener{
         startSetupTestEnv();
         
         startTestRunner();
-        
-        generateTestResult();
+
     }
     
    
@@ -130,6 +140,15 @@ public class DailyRunner2 implements TestcaseRunningListener{
             Installer.install(serial, Builder.getInstance().getAppApkFileName());
             Installer.install(serial, Builder.getInstance().getTestAppApkFileName());
             
+            if (!Util.isApkInstalled(serial, SystemEnv.APP_PACKAGE_NAME)) {
+                throw new InstallException(SystemEnv.APP_PACKAGE_NAME,
+                        SystemEnv.APP_PACKAGE_NAME + " 安装失败");
+            }
+            if (!Util.isApkInstalled(serial, SystemEnv.TESTAPP_PACKAGE_NAME)) {
+                throw new InstallException(SystemEnv.TESTAPP_PACKAGE_NAME,
+                        SystemEnv.TESTAPP_PACKAGE_NAME + " 安装失败");
+            }
+            
 //            runCmd("adb -s "+serial+" install -r "+Builder.getInstance().getAppApkFileName());
 //            runCmd("adb -s "+serial+" install -r "+Builder.getInstance().getTestAppApkFileName());
         }
@@ -150,17 +169,10 @@ public class DailyRunner2 implements TestcaseRunningListener{
         }
         
     }
-   
-    private void generateTestResult() {
-        
-       
-    }
     
     
     
     private void onAllRunnerFinished(){
-        
-        
         
         String report =createTestReport();
         logger.info(report);
@@ -177,14 +189,7 @@ public class DailyRunner2 implements TestcaseRunningListener{
     private List<String> getMailRecipients(){
         return MailSender.defaultRecipients;
     }
-    
-    private TestInfo createTestInfoFromXml(){
-        return null;
-    }
-    
-    private String createTestReportFromXml(){
-        return null;
-    }
+
     
     private String createTestReport(){
         StringBuilder report = new StringBuilder();
@@ -240,7 +245,7 @@ public class DailyRunner2 implements TestcaseRunningListener{
      */
     public static void main(String[] args) {
         AndroidDebugBridge.init(false);
-        DailyRunner2.getInstance().dailyPerfom();
+        DailyRunner2.getInstance().dailyPerfom(false);
     }
 
 

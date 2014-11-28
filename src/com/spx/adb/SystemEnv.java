@@ -30,6 +30,7 @@ public class SystemEnv {
     
     public static int startUpTimeTestCount = 20;
     
+    public static int MAX_TEST_COUNT_PER_LOOP = 400;
     
     static {
         List<String> fileContentLines = Util
@@ -71,6 +72,12 @@ public class SystemEnv {
                 String count = line.substring("startuptime.test.count=".length());
                 try{
                     startUpTimeTestCount = Integer.parseInt(count);
+                }catch(Exception ex){}
+            }
+            if (line.startsWith("max.test.count.perloop=")) {
+                String count = line.substring("max.test.count.perloop=".length());
+                try{
+                    MAX_TEST_COUNT_PER_LOOP = Integer.parseInt(count);
                 }catch(Exception ex){}
             }
         }

@@ -96,7 +96,7 @@ public class HtmlBody {
     private String getFailedTableContent() {
         
         // 解析12个小时内的测试数据, 得到一个map数据结构
-        Map<String, Integer> failedData = HisotoryDataCreator.createFailedTestCaseData(testingInfo.getSerial(), 12);
+        Map<String, Integer> failedData = HisotoryDataCollector.getFailedTestCaseData(testingInfo.getSerial(), 10);
         
         
         StringBuilder sb = new StringBuilder();

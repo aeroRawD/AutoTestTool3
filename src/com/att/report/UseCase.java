@@ -67,8 +67,8 @@ public class UseCase {
     }
     
 //    /**
-//     * ·µ»ØÔÚÒ»¶¨µÄÊ±¼ä¶ÎÄÚÊ§°ÜµÄ´ÎÊı
-//     * @param hour  Ğ¡Ê±Êı
+//     * è¿”å›åœ¨ä¸€å®šçš„æ—¶é—´æ®µå†…å¤±è´¥çš„æ¬¡æ•°
+//     * @param hour  å°æ—¶æ•°
 //     * @return
 //     */
 //    public int getFailedTimes(int hour){

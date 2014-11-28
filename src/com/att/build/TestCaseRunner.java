@@ -251,7 +251,7 @@ public class TestCaseRunner extends Thread implements LogCatListener{
     private String generateMailContent(){
         String fileContent = Util.getFileContent("data/testresult.html");
         MailContentBuilder mailContentBuilder = new MailContentBuilder(fileContent, totalUseCase,failedUseCase, passUseCase, mTestInfo);
-        mailContentBuilder.build();
+        mailContentBuilder.build(false);
         String mailContent = mailContentBuilder.buildHtmlMailContent();
         return mailContent;
     }
@@ -327,7 +327,7 @@ public class TestCaseRunner extends Thread implements LogCatListener{
     private void saveData() {
         logger.info("saveData() .... ");
         String time = Util.getTimeStr("yyyy-MM-dd_HHmmss");
-        Util.copyFolder("testreport/"+serial+"", "data/backup/workspace/"+serial+"/"+time);
+        Util.copyFolder("testreport/"+serial+"", "data/backup/monitor/"+serial+"/"+time);
     }
 
     private void runOneCommand(TestCommand tc, ConsoleOutputReceiver receiver){

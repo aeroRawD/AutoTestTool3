@@ -94,7 +94,7 @@ public class ApplicationBuilder implements SvnUpdateListener, TestcaseRunningLis
 		
         diffFile = SvnManager.getInstance().createDiffWithLastRev(revisionInfo.getRevId(), localpath);
 		
-		
+        logger.info("install succeed devices:"+installSucceedDeviceList.size());
 		if(installSucceedDeviceList.size()>0){
 			runTestCase(revisionInfo, diffFile);
 		}
@@ -104,7 +104,7 @@ public class ApplicationBuilder implements SvnUpdateListener, TestcaseRunningLis
 	private void runTestCase(SvnRevisionInfo revisionInfo, String diffFile) {
 	    runningTestDeviceList.clear();
 	    totalTestResults.clear();
-	    
+	    logger.info("runTestCase() ...  ");
 	    
 	    
 		//TestcaseCommand testCommand = new TestcaseCommand();
@@ -167,16 +167,22 @@ public class ApplicationBuilder implements SvnUpdateListener, TestcaseRunningLis
         logger.info("onAllTestRunnerFinished()  diffFile:"+diffFile);
         logger.info("onAllTestRunnerFinished()  lintFile:"+lintFile);
         try{
+        
+        //attached.add("data/backup/rev/powerword7/15937/15936_15937.patch");
+        
+        String mailContent = getMailContent(localPath);
+        
         //邮件发送测试结果
         List<String> attached = new ArrayList<String>();
-        if(diffFile!=null)
-            attached.add(diffFile);
-        if(lintFile!=null){
-            attached.add(lintFile);
-        }
-        //attached.add("data/backup/rev/powerword7/15937/15936_15937.patch");
+            if (isLintWaringsAdd() || !isCasePassed()) {
+                if (diffFile != null)
+                    attached.add(diffFile);
+                if (lintFile != null && isLintWaringsAdd()) {
+                    attached.add(lintFile);
+                }
+            }
         logger.info("onAllTestRunnerFinished()  attached.size():"+attached.size());
-        String mailContent = getMailContent(localPath);
+        
         MailSender.getInstance().sendMail(getMailRecipients(),
                 getMailSubject(), mailContent, false, attached);
         

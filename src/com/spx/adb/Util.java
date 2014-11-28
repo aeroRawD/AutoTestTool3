@@ -419,6 +419,17 @@ public class Util {
 		return output.contains(packageName);
 	}
 	
+    public static boolean isApkInstalled(String serial, String packageName) {
+        List<String> cmdOutput = getCmdOutput("adb -s " + serial
+                + " shell pm list packages", true);
+        boolean installed = false;
+        for (String s : cmdOutput) {
+            if (s.contains(packageName))
+                return true;
+        }
+        return installed;
+    }
+	
 	/**
 	 * 安装
 	 * @param device
@@ -631,7 +642,7 @@ public class Util {
     public static List<String> getFileContentLines(File file, String encode) {
         List<String> lines = new ArrayList<String>();
         try {
-            if(!file.exists()) return null;
+            if(!file.exists()) return lines;
             // BufferedReader br = new BufferedReader(new FileReader(file));
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     new FileInputStream(file), encode));
