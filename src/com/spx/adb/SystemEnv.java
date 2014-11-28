@@ -11,6 +11,8 @@ public class SystemEnv {
     private static String pwd ="spx";
     public static String loopStartTime = "09:00";
     public static String loopEndTime = "21:00";
+    
+    
     public static String priority = "all";
     public static String runMode = "test";
     
@@ -27,6 +29,7 @@ public class SystemEnv {
     public static String TESTAPP_PROJECT_PATH = "D:/data/test";
     
     public static int startUpTimeTestCount = 20;
+    
     
     static {
         List<String> fileContentLines = Util

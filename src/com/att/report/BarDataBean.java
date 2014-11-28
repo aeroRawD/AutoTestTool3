@@ -2,7 +2,7 @@ package com.att.report;
 
 public class BarDataBean {
     private String title;
-    private int succeed;
+    private int total;
     private int failed;
     public String getTitle() {
         return title;
@@ -10,11 +10,11 @@ public class BarDataBean {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getSucceed() {
-        return succeed;
+    public int getTotal() {
+        return total;
     }
-    public void setSucceed(int succeed) {
-        this.succeed = succeed;
+    public void setTotal(int total) {
+        this.total = total;
     }
     public int getFailed() {
         return failed;

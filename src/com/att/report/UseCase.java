@@ -65,4 +65,13 @@ public class UseCase {
     public void setPassed(boolean ps){
         pass = ps;
     }
+    
+//    /**
+//     * 返回在一定的时间段内失败的次数
+//     * @param hour  小时数
+//     * @return
+//     */
+//    public int getFailedTimes(int hour){
+//        
+//    }
 }

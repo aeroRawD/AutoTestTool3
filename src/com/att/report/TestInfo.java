@@ -33,6 +33,10 @@ public class TestInfo {
         serial = s;
     }
     
+    public String getSerial(){
+        return serial;
+    }
+    
     public int getMaxHeapAlloc() {
         return maxHeapAlloc;
     }

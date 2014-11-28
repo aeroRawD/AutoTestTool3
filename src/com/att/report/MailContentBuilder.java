@@ -33,12 +33,12 @@ public class MailContentBuilder {
         this.succeedUseCaseList = succeedList;
     }
 
-    public void build() {
+    public void build(boolean dailyReport) {
 
         String headPart = getHtmlPart(templeteFileContent, "<head>", "</head>");
         mHead = new HtmlHead(headPart);
         String bodyPart = getHtmlPart(templeteFileContent, "<body>", "</body>");
-        mBody = new HtmlBody(this, bodyPart, useCaseList, failedUseCaseList, succeedUseCaseList, testingInfo);
+        mBody = new HtmlBody(this, bodyPart, useCaseList, failedUseCaseList, succeedUseCaseList, testingInfo, dailyReport);
     }
 
     public static String getHtmlPart(String html, String beginTag, String endTag) {

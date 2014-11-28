@@ -94,7 +94,7 @@ public class SvnMonitor extends Thread {
      * 检查SVN是否更新
      */
     private void checkSvnUpdate(String localProjectPath) {
-        
+        logger.info("checkSvnUpdate  localProjectPath:"+localProjectPath);
         if(ApplicationBuilder.getInstance().isRunningTest()){
             logger.info("正在运行测试, 等待...");
             return;

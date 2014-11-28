@@ -2,6 +2,7 @@ package com.att.report;
 
 
 import java.util.List;
+import java.util.Map;
 
 import com.spx.adb.Util;
 
@@ -14,13 +15,15 @@ public class HtmlBody {
     
     MailContentBuilder mailBuilder =null;
     TestInfo testingInfo = null;
-    public HtmlBody(MailContentBuilder mailBuilder, String str, List<UseCase> useCaseList,List<UseCase> failedList,List<UseCase> succeedList, TestInfo testingInfo) {
+    boolean dailyReport = false;
+    public HtmlBody(MailContentBuilder mailBuilder, String str, List<UseCase> useCaseList,List<UseCase> failedList,List<UseCase> succeedList, TestInfo testingInfo, boolean dailyReport) {
         bodyCode = str;
         this.useCaseList = useCaseList;
         this.failedUseCaseList = failedList;
         this.succeedUseCaseList = succeedList;
         this.mailBuilder = mailBuilder;
         this.testingInfo = testingInfo;
+        this.dailyReport = dailyReport;
         parseCode();
     }
 
@@ -59,6 +62,7 @@ public class HtmlBody {
         sb.append("<th class=\"wb\"></th>\r\n");
         sb.append("<th class=\"wb\">wifi</th>\r\n");
         sb.append("<th class=\"wb\">负责人</th>\r\n");
+        
         sb.append("</tr>\r\n");
 
         // List<UseCase> useCaseList =
@@ -81,6 +85,7 @@ public class HtmlBody {
             sb.append("<td class=\"PA\">PASS</td>\r\n");
             sb.append("<td class=\"PA\">" + uc.getAttr("wifi") + "</td>\r\n");
             sb.append("<td class=\"PA\">" + uc.getAttr("author") + "</td>\r\n");
+            
             sb.append("</tr>\r\n");
         }
 
@@ -89,6 +94,11 @@ public class HtmlBody {
     }
 
     private String getFailedTableContent() {
+        
+        // 解析12个小时内的测试数据, 得到一个map数据结构
+        Map<String, Integer> failedData = HisotoryDataCreator.createFailedTestCaseData(testingInfo.getSerial(), 12);
+        
+        
         StringBuilder sb = new StringBuilder();
         sb.append("<table class=\"wb\">\r\n");
 
@@ -100,6 +110,7 @@ public class HtmlBody {
         sb.append("<th class=\"wb\">告警提示</th>\r\n");
         sb.append("<th class=\"wb\">wifi</th>\r\n");
         sb.append("<th class=\"wb\">负责人</th>\r\n");
+        sb.append("<th class=\"wb\">最近失败次数</th>\r\n");
         sb.append("</tr>\r\n");
 
         // List<UseCase> useCaseList =
@@ -113,12 +124,11 @@ public class HtmlBody {
             if (uc == null || uc.isPassed()) {
                 continue;
             }
-
+            String test = uc.getAttr("classname") + "." + uc.getAttr("name");
             sb.append("<tr>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("caseid") + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("title") + "</td>\r\n");
-            sb.append("<td class=\"wb\">" + uc.getAttr("classname") + "."
-                    + uc.getAttr("name") + "</td>\r\n");
+            sb.append("<td class=\"wb\">" + test+ "</td>\r\n");
             String error = uc.getAttr("error");
             if(Util.isNull(error) || "NULL".equalsIgnoreCase(error)|| "no error".equalsIgnoreCase(error)){
                 error = uc.getError();
@@ -126,6 +136,11 @@ public class HtmlBody {
             sb.append("<td class=\"wb\">" + error + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("wifi") + "</td>\r\n");
             sb.append("<td class=\"wb\">" + uc.getAttr("author") + "</td>\r\n");
+            String failTimes = "";
+            if (failedData.get(test) != null) {
+                failTimes = failedData.get(test)+"";
+            }
+            sb.append("<td class=\"PA\"> "+failTimes+"</td>\r\n");
             sb.append("</tr>\r\n");
         }
 

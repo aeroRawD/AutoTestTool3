@@ -27,7 +27,7 @@ public class AppStartupTimeTest {
 	private int startUpTimeAvg = 0;
 	
 	public void perform(IDevice device) {
-	    System.out.println("perform() ... ");
+	    System.out.println("perform() .. 开始测试应用的启动时间, 测试启动次数:"+MAX_TEST_COUNT);
 		this.device = device;
 		serial = device.getSerialNumber();
 		

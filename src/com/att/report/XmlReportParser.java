@@ -63,6 +63,8 @@ public class XmlReportParser {
         return mUseCaseList;
     }  
     
+   // public void add
+    
     public void parseOneFile(String filename){
         File file = new File(filename);
         SAXReader reader = new SAXReader();
