@@ -106,36 +106,44 @@ public class LintResult {
     public String diffWith(LintResult lresult){
         StringBuilder diff = new StringBuilder();
 //        diff.append(getLastLine()+"\r\n");
-        
+        StringBuilder warningAddDesc = new StringBuilder();
         int myError = this.getErrorCount();
         int yourError = lresult.getErrorCount();
         if(myError!=yourError){
             if(myError<yourError){
-                //diff.append("error减少了"+(yourError-myError)+"个;  ");
+                //warningAddDesc.append("error减少了"+(yourError-myError)+"个;  ");
             } else{
-                diff.append("error增加了"+(myError-yourError)+"个;  ");
+                warningAddDesc.append("error增加了"+(myError-yourError)+"个;  ");
             }
         }else{
-            diff.append("error数量不变;  ");
+            warningAddDesc.append("error数量不变;  ");
         }
         
         int myWarings = this.getWaringsCount();
         int yourWarings = lresult.getWaringsCount();
         if (myWarings != yourWarings) {
             if(myWarings<yourWarings){
-                //diff.append("warings减少了"+(yourWarings-myWarings)+"个; ");
+                //warningAddDesc.append("warings减少了"+(yourWarings-myWarings)+"个; ");
             } else{
-                diff.append("warings增加了"+(myWarings-yourWarings)+"个; ");
+                warningAddDesc.append("warings增加了"+(myWarings-yourWarings)+"个; ");
             }
         } else {
-            diff.append("warings数量不变; ");
+            warningAddDesc.append("warings数量不变; ");
         }
-        diff.append("\r\n");
-        diff.append("\r\n");
+        warningAddDesc.append("\r\n");
+        warningAddDesc.append("\r\n");
         
         List<String> myWarnings = getWarningList();
         List<String> yourWarnings = lresult.getWarningList();
-        diff.append(diffWaringsList(myWarnings, yourWarnings));
+        String diffWarnings = diffWaringsList(myWarnings, yourWarnings);
+        
+        int waringAddCount =Util.countSubstring(diffWarnings, "增加的");
+        if(waringAddCount>0){
+            diff.append("warings增加了"+waringAddCount+"个; \r\n");
+        }else{
+            diff.append("warings数量不变; \r\n");
+        }
+        diff.append(diffWarnings);
         return diff.toString();
     }
     
@@ -201,11 +209,11 @@ public class LintResult {
    
     
     public static void main(String[] args){
-        LintResult lintResult1 = new LintResult("data/backup/rev/powerword7/15941/lint.txt");
+        LintResult lintResult1 = new LintResult("data/backup/rev/powerword7/16162/lint.txt");
         System.out.println("errors:"+lintResult1.getErrorCount());
         System.out.println("warings:"+lintResult1.getWaringsCount());
         
-        LintResult lintResult2 = new LintResult("data/backup/rev/powerword7/15938/lint.txt");
+        LintResult lintResult2 = new LintResult("data/backup/rev/powerword7/16157/lint.txt");
         System.out.println("errors:"+lintResult2.getErrorCount());
         System.out.println("warings:"+lintResult2.getWaringsCount());
         

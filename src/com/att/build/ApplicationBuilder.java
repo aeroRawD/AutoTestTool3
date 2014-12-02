@@ -345,7 +345,7 @@ public class ApplicationBuilder implements SvnUpdateListener, TestcaseRunningLis
 //            recipients.add("HUANGPUJUN@kingsoft.com");
 //            recipients.add("ChenJiangang@kingsoft.com");
             if(isLintWaringsAdd() || !isCasePassed()){
-                recipients.add("ciba_android@kingsoft.com");
+                recipients.add(author+"@kingsoft.com");
             }
             
         }

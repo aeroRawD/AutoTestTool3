@@ -68,10 +68,10 @@ public class HistoryTestResult {
         HistoryTestResult testResult = new HistoryTestResult("2008edd8f316", path);
         
         List<String> failedTestCases2 = testResult.getFailedTestCases();
-        System.out.println("失败的用例数:"+failedTestCases2.size());
+        System.out.println("澶辫触鐨勭敤渚嬫暟:"+failedTestCases2.size());
         
         List<String> succeedTestCases = testResult.getSucceedTestCases();
-        System.out.println("成功的用例数:"+succeedTestCases.size());
+        System.out.println("鎴愬姛鐨勭敤渚嬫暟:"+succeedTestCases.size());
         
         TestInfo testInfo = testResult.getTestInfo();
         if(testInfo!=null){

@@ -187,12 +187,12 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
     private List<String> getMailRecipients() {
         List<String> recipients = new ArrayList<String>();
         recipients.add("shaopengxiang@kingsoft.com");
-        if(!SystemEnv.isTestingMode()){
-            recipients.add("jiangke@kingsoft.com");
-            recipients.add("GuoQin@kingsoft.com");
-            recipients.add("taohongxia@kingsoft.com");
-            recipients.add("gaoxiang1@kingsoft.com");
-        }
+//        if(!SystemEnv.isTestingMode()){
+//            recipients.add("jiangke@kingsoft.com");
+//            recipients.add("GuoQin@kingsoft.com");
+//            recipients.add("taohongxia@kingsoft.com");
+//            recipients.add("gaoxiang1@kingsoft.com");
+//        }
 
         return recipients;
     }
@@ -201,9 +201,9 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
     private static boolean isLastRoundOfToday(){
         String now = Util.getTimeStr("HH:mm");
         if (now.compareTo(SystemEnv.loopEndTime) > 0 || now.compareTo(SystemEnv.loopStartTime) < 0) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void cleanupWorkspace() {
@@ -393,15 +393,15 @@ public class InstrumentTestRunner extends Thread implements LogCatListener {
             
             data.setTitle(runId);
             
-            if(SystemEnv.isTestingMode()){
-                barData.add(data);
-            } else{
-                if (data.getTotal() != 0 && data.getTotal() > 100
-                        && data.getFailed() < 100) {
-                    barData.add(data);
-                } 
-            }
-           
+//            if(SystemEnv.isTestingMode()){
+//                barData.add(data);
+//            } else{
+//                if (data.getTotal() != 0 && data.getTotal() > 100
+//                        && data.getFailed() < 100) {
+//                    barData.add(data);
+//                } 
+//            }
+            barData.add(data);
             
             
         }

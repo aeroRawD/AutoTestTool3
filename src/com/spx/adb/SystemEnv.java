@@ -97,13 +97,6 @@ public class SystemEnv {
     public static String getUser(){
         return user;
     }
-    
-    
-    static{
-        
-    }
-    
-	
 	
 	public static HashMap<String, String> urlMap = new HashMap<String, String>();
 	static {

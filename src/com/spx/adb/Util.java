@@ -757,12 +757,31 @@ public class Util {
         return formated;
     }
     
+    public static int countSubstring(String str, String findStr){
+//        String str = "helloslkhellodjladfjhello";
+//        String findStr = "hello";
+        int lastIndex = 0;
+        int count =0;
+
+        while(lastIndex != -1){
+
+               lastIndex = str.indexOf(findStr,lastIndex);
+
+               if( lastIndex != -1){
+                     count ++;
+                     lastIndex+=findStr.length();
+              }
+        }
+        return count;
+    }
+    
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	    String f = formateStack("junit.framework.AssertionFailedError: 在查词结果页面点反馈后没有进入反馈页面,fragment:0 at com.kingsoft.test.Powerword7TestCase.assertTrue2(Powerword7TestCase.java:210) at com.kingsoft.translate.TranslateFragmentTest.sendFeebackText(TranslateFragmentTest.java:1030) at com.kingsoft.translate.TranslateFragmentTest.testTrans007(TranslateFragmentTest.java:178) at java.lang.reflect.Method.invokeNative(Native Method) at android.test.InstrumentationTestCase.runMethod(InstrumentationTestCase.java:214) at android.test.InstrumentationTestCase.runTest(InstrumentationTestCase.java:199) at android.test.ActivityInstrumentationTestCase2.runTest(ActivityInstrumentationTestCase2.java:192) at com.kingsoft.test.Powerword7TestCase.callSuperRunTest(Powerword7TestCase.java:97) at com.kingsoft.test.Powerword7TestCase.access$000(Powerword7TestCase.java:24) at com.kingsoft.test.Powerword7TestCase$1.run(Powerword7TestCase.java:46) ");
-        System.out.println(f);
+//	    String f = formateStack("junit.framework.AssertionFailedError: 在查词结果页面点反馈后没有进入反馈页面,fragment:0 at com.kingsoft.test.Powerword7TestCase.assertTrue2(Powerword7TestCase.java:210) at com.kingsoft.translate.TranslateFragmentTest.sendFeebackText(TranslateFragmentTest.java:1030) at com.kingsoft.translate.TranslateFragmentTest.testTrans007(TranslateFragmentTest.java:178) at java.lang.reflect.Method.invokeNative(Native Method) at android.test.InstrumentationTestCase.runMethod(InstrumentationTestCase.java:214) at android.test.InstrumentationTestCase.runTest(InstrumentationTestCase.java:199) at android.test.ActivityInstrumentationTestCase2.runTest(ActivityInstrumentationTestCase2.java:192) at com.kingsoft.test.Powerword7TestCase.callSuperRunTest(Powerword7TestCase.java:97) at com.kingsoft.test.Powerword7TestCase.access$000(Powerword7TestCase.java:24) at com.kingsoft.test.Powerword7TestCase$1.run(Powerword7TestCase.java:46) ");
+//        System.out.println(f);
+	    //countSubstring("", "");
 	}
 
 }
